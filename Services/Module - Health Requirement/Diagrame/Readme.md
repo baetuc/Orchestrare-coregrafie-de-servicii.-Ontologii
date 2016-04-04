@@ -1,10 +1,10 @@
 #### Diagramele aplicatiei
 
-- [x] Diagrama de Clase
-- [x] Diagrama de Pachete
-- [x] Diagrama de Stare
-- [x] Diagrama de Secventa
-- [x] Diagrama Use Case
-- [x] Diagrama de Stare
-- [x] Diagrama de Deployment
 - [x] Diagrama de Activitate
+- [x] Diagrama de Colaborare
+- [x] Diagrama de Deployment
+- [x] Diagrama de Pachete
+- [x] Diagrama Secventa
+- [x] Diagrama de Stare
+- [x] Diagrama de Clase
+- [x] Diagrama Use Case
