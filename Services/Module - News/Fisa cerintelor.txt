@@ -64,7 +64,7 @@ Scenarii de utilizare:
 		- Extensie
 			Cautarea ar putea fi realizata chiar in acelasi mod ca si cautarea unei anumite stiri, prin introducerea perioadei dorite in acelasi camp, exact ca o cautare normala.
 
-	5. Aflarea loctiei la care face referire stirea
+	5. Aflarea locatiei la care face referire stirea
 		- Obiectiv/Context
 			Utilizatorul poate cere detalii cu privire la locatia la care are/ a avut loc evenimentul.
 		- Scenariu/Pasi
