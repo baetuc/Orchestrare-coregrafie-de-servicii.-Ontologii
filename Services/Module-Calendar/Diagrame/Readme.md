@@ -1,1 +1,0 @@
-folder pentru diagrame
