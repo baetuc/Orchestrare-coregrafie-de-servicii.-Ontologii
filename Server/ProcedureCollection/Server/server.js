@@ -5,7 +5,7 @@ var bodyParser = require('body-parser');
 var async = require("async");
 var routes = require('./routes');
 var path = require('path');
-var timeout=require('connect-timeout');
+var timeout = require('connect-timeout');
 var cons = require('consolidate');
 function haltOnTimedout(req, res, next){
 	if (!req.timedout) next();

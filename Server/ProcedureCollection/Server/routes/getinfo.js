@@ -1,20 +1,27 @@
 function GetInfo(){
-	
-	var getLocatie = function(lat,long,callback){
-		request.get('127.0.0.1:3232?lat=' + locatie.lat + '&long='  + locatie.long,function(strada){
-			callback(strada);
+	var request = require('request')
+
+	this.getLocatie = function(callback){
+		console.info("getLocatie called");
+		request('http://127.0.0.1:3232',function(err,response,doc){
+			console.info("callback with " + doc)
+			callback(doc);
 		});
 	}
 
-	var getVreme = function(streetName,callback){
-		request.get('127.0.0.1:3232?streetName=' + streetName,function(vreme){
+	this.getVreme = function(lat,long,data,callback){
+		if(!data){
+			data = new Date();
+		}
+		//?action=vreme&lat=23.323&long=45.232&data=127377232
+		request('http://127.0.0.1?action=vreme&lat=' + lat + '&long=' + long + '&data=' + data.getTime(), function(err,response,vreme){
 			callback(vreme);
 		});
 	}
 
-	var getStiri = function(streetName,callback){
-		request.get('127.0.0.1:3232?streetName=' + streetName,function(stiri){
-			callback(stiri);
+	this.getStiri = function(oras, callback){
+		request('http://127.0.0.1?action=stiri&oras=' + oras, function(stiriArray){
+			callback(stiriArray);
 		});
 	}
 }
