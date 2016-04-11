@@ -18,4 +18,4 @@ function GetInfo(){
 		});
 	}
 }
-module.exports = getInfo;
+module.exports = GetInfo;
