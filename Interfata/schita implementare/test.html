@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Orchestrare servicii</title>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+	<link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" 
+	
+	<header>
+  
+	<script>
+	var height = document.documentElement.scrollHeight;
+	curDown = false;
+function scroll(event){
+    var y = event.clientY;
+    var yPercentage = y/screen.height;
+	if(curDown === false)
+    window.scrollTo(0,yPercentage*height);
+}
+window.onmousemove = scroll;
+window.addEventListener('mousedown', function(e){ curDown = true;  });
+window.addEventListener('mouseup', function(e){ curDown = false; });
+	</script>
+</header>
+</head>
+<body onload="initMap()">
+	<div class="navigation">
+		<!--butoane colturi pentru acces meniu-->
+		<a href="#" class="trigger trigger-left" style="float:left" onclick="triggerLeft(event)"><span class="glyphicon glyphicon-align-justify"></span></a>
+		<a href="#" class="trigger trigger-right" style="float: right;" onclick="triggerRight(event)"><span class="glyphicon glyphicon-align-justify"></span></a>
+		<!--meniul din bara sus -->
+		<div class="container">
+			<div class="nav">
+				<a href="#">Home</a>
+				<a href="#">Random button</a>
+			</div>
+		</div>
+	</div>
+	<div id="swipeme" class="main">
+		<!--panou stanga-->
+		<div id="swipeme-left" class="panel panel-left">	
+		<div class="centerAndColor">
+			<img src="assets/images/sunny.png" alt="Weather status" style="height:30vh;width:30vh"> 
+			<p>Date random vreme</p>
+		</div>
+			
+		</div>
+		
+		<!--continut principal-->
+		<div id="swipeme-main" class="panel panel-main">
+			<div class="contents">
+				<!--<h1 style="background-color:red;text-align:center;font-size:6vw">Orchestrare servicii</h1>
+				<br/>
+				<p style="text-align:center">Lorem Ipsum este pur şi simplu o machetă pentru text a industriei tipografice. Lorem Ipsum a fost macheta standard a industriei încă din secolul al XVI-lea, când un tipograf anonim a luat o planşetă de litere şi le-a amestecat pentru a crea o carte demonstrativă pentru literele respective. Nu doar că a supravieţuit timp de cinci secole, dar şi a facut saltul în tipografia electronică practic neschimbată. A fost popularizată în anii '60 odată cu ieşirea colilor Letraset care conţineau pasaje Lorem Ipsum, iar mai recent, prin programele de publicare pentru calculator, ca Aldus PageMaker care includeau versiuni de Lorem Ipsum.</p>
+				-->
+				<div id="map"></div>
+				<br/>
+				<p style="text-align:center;padding-top:10vh">Lorem Ipsum este pur şi simplu o machetă pentru text a industriei tipografice. Lorem Ipsum a fost macheta standard a industriei încă din secolul al XVI-lea, când un tipograf anonim a luat o planşetă de litere şi le-a amestecat pentru a crea o carte demonstrativă pentru literele respective. Nu doar că a supravieţuit timp de cinci secole, dar şi a facut saltul în tipografia electronică practic neschimbată. A fost popularizată în anii '60 odată cu ieşirea colilor Letraset care conţineau pasaje Lorem Ipsum, iar mai recent, prin programele de publicare pentru calculator, ca Aldus PageMaker care includeau versiuni de Lorem Ipsum.</p>
+				<p style="text-align:center;padding-top:10vh">Lorem Ipsum este pur şi simplu o machetă pentru text a industriei tipografice. Lorem Ipsum a fost macheta standard a industriei încă din secolul al XVI-lea, când un tipograf anonim a luat o planşetă de litere şi le-a amestecat pentru a crea o carte demonstrativă pentru literele respective. Nu doar că a supravieţuit timp de cinci secole, dar şi a facut saltul în tipografia electronică practic neschimbată. A fost popularizată în anii '60 odată cu ieşirea colilor Letraset care conţineau pasaje Lorem Ipsum, iar mai recent, prin programele de publicare pentru calculator, ca Aldus PageMaker care includeau versiuni de Lorem Ipsum.</p>
+				<p style="text-align:center;padding-top:10vh">Lorem Ipsum este pur şi simplu o machetă pentru text a industriei tipografice. Lorem Ipsum a fost macheta standard a industriei încă din secolul al XVI-lea, când un tipograf anonim a luat o planşetă de litere şi le-a amestecat pentru a crea o carte demonstrativă pentru literele respective. Nu doar că a supravieţuit timp de cinci secole, dar şi a facut saltul în tipografia electronică practic neschimbată. A fost popularizată în anii '60 odată cu ieşirea colilor Letraset care conţineau pasaje Lorem Ipsum, iar mai recent, prin programele de publicare pentru calculator, ca Aldus PageMaker care includeau versiuni de Lorem Ipsum.</p>
+				<p style="text-align:center;padding-top:10vh">Lorem Ipsum este pur şi simplu o machetă pentru text a industriei tipografice. Lorem Ipsum a fost macheta standard a industriei încă din secolul al XVI-lea, când un tipograf anonim a luat o planşetă de litere şi le-a amestecat pentru a crea o carte demonstrativă pentru literele respective. Nu doar că a supravieţuit timp de cinci secole, dar şi a facut saltul în tipografia electronică practic neschimbată. A fost popularizată în anii '60 odată cu ieşirea colilor Letraset care conţineau pasaje Lorem Ipsum, iar mai recent, prin programele de publicare pentru calculator, ca Aldus PageMaker care includeau versiuni de Lorem Ipsum.</p>
+				<p style="text-align:center;padding-top:10vh">Lorem Ipsum este pur şi simplu o machetă pentru text a industriei tipografice. Lorem Ipsum a fost macheta standard a industriei încă din secolul al XVI-lea, când un tipograf anonim a luat o planşetă de litere şi le-a amestecat pentru a crea o carte demonstrativă pentru literele respective. Nu doar că a supravieţuit timp de cinci secole, dar şi a facut saltul în tipografia electronică practic neschimbată. A fost popularizată în anii '60 odată cu ieşirea colilor Letraset care conţineau pasaje Lorem Ipsum, iar mai recent, prin programele de publicare pentru calculator, ca Aldus PageMaker care includeau versiuni de Lorem Ipsum.</p>
+				<p style="text-align:center;padding-top:10vh">Lorem Ipsum este pur şi simplu o machetă pentru text a industriei tipografice. Lorem Ipsum a fost macheta standard a industriei încă din secolul al XVI-lea, când un tipograf anonim a luat o planşetă de litere şi le-a amestecat pentru a crea o carte demonstrativă pentru literele respective. Nu doar că a supravieţuit timp de cinci secole, dar şi a facut saltul în tipografia electronică practic neschimbată. A fost popularizată în anii '60 odată cu ieşirea colilor Letraset care conţineau pasaje Lorem Ipsum, iar mai recent, prin programele de publicare pentru calculator, ca Aldus PageMaker care includeau versiuni de Lorem Ipsum.</p>
+			</div>
+		</div>
+		
+		<!--panou dreapta-->
+		<div id="swipeme-right" class="panel panel-right">
+			<div class="centerAndColor">
+				<img src="assets/images/calendar.png" alt="Weather status" style="height:30vh;width:30vh"> 
+				<p>Date random calendar</p>
+			</div>
+		</div>
+	</div>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script type="text/javascript" src="assets/js/maps.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?callback=initMap" async defer></script>
+	<script type="text/javascript" src="assets/js/swipeme.min.js"></script>
+	<script type="text/javascript" src="assets/js/swipeme.mouse.min.js"></script>
+	<script type="text/javascript" src="assets/js/application.min.js"></script>
+</body>
+</html>
