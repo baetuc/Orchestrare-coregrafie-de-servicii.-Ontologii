@@ -1,14 +1,6 @@
 function GetInfo(){
 	var request = require('request')
 
-	this.getLocatie = function(callback){
-		console.info("getLocatie called");
-		request('http://127.0.0.1:3232',function(err,response,doc){
-			console.info("callback with " + doc)
-			callback(doc);
-		});
-	}
-
 	this.getVreme = function(lat,long,data,callback){
 		if(!data){
 			data = new Date();
@@ -44,6 +36,38 @@ function GetInfo(){
 	this.getPointsOfInterest = function (lat, long, callback){
 		request('http://127.0.0.1?action=PointsOfInterest&lat=' + lat + '&long=' + long, function(err, response, PointsOfInterestArray){
 			callback(PointsOfInterestArray);
+		});
+	}
+	this.getLocatie = function(callback){
+		console.info("getLocatie called");
+		request('http://127.0.0.1:3232',function(err,response,doc){
+			console.info("callback with " + doc)
+			callback(doc);
+		});
+	}
+	this.getLocatieFromAdresa = function(adresa, callback){
+		request('http:127.0.0.1:3213', function(err, response, doc){
+			callback(doc);
+		})
+	}
+
+	this.getEvenimente = function(oras, callback){
+		request('http://127.0.0.1?action=evenimente&oras=' + oras, function(stiriArray){
+			callback(stiriArray);
+		});
+	}
+
+	this.getStiriGlobal = function(callback){
+		request('http://127.0.0.1', function(stiriArray){
+			callback(stiriArray);
+		});
+	}
+		
+	this.sendToCalendar = function(event,callback){
+		console.info("getLocatie called");
+		request.post('http://127.0.0.1:3232',event,function(err,response,doc){
+			console.info("callback with " + doc)
+			callback(doc);
 		});
 	}
 }
