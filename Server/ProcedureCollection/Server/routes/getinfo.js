@@ -24,5 +24,27 @@ function GetInfo(){
 			callback(stiriArray);
 		});
 	}
+
+	this.getInfoAboutHealth = function(tara,temperatura,callback){
+		request('http://127.0.0.1?action=sanatate&tara=' + tara + '&temperatura=' + temperatura, function(sfaturiArray){
+			callback(sfaturiArray);
+		});
+	}
+	
+	this.getEvents = function (data,locatie,callback){
+		request('http://127.0.0.1?action=getEvents&data=' + data.getTime() + '&locatie=' + locatie, function(eventsArray){
+			callback(eventsArray);
+		});
+	}
+	this.getEventsDays = function (data,callback){
+		request('http://127.0.0.1?action=Events&data=' + data.getTime(), function(eventsDaysArray){
+			callback(eventsDaysArray);
+		});
+	}
+	this.getPointsOfInterest = function (lat, long, callback){
+		request('http://127.0.0.1?action=PointsOfInterest&lat=' + lat + '&long=' + long, function(PointsOfInterestArray){
+			callback(PointsOfInterestArray);
+		});
+	}
 }
 module.exports = GetInfo;
