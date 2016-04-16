@@ -45,24 +45,29 @@ function GetInfo(){
 			callback(doc);
 		});
 	}
-	this.getLocatieFromAdresa = function(adresa, callback){
+	
+	/*primesc ca parametru o adresa si returnez un json cu diferite informatii */
+	this.getLocationFromAddress = function(address, callback){
 		request('http:127.0.0.1:3213', function(err, response, doc){
 			callback(doc);
-		})
+		});
 	}
-
-	this.getEvenimente = function(oras, callback){
-		request('http://127.0.0.1?action=evenimente&oras=' + oras, function(stiriArray){
-			callback(stiriArray);
+	
+	/*primesc ca parametru un oras si returnez evenimentele din acel oras*/
+	this.getEventsFromTown = function(town, callback){
+		request('http://127.0.0.1?action=events&town=' + town, function(eventsArray){
+			callback(eventsArray);
 		});
 	}
 
-	this.getStiriGlobal = function(callback){
-		request('http://127.0.0.1', function(stiriArray){
-			callback(stiriArray);
+	/*nu primesc nimic ca parametru si returnez evenimentele din toata tara*/
+	this.getGlobalNews = function(callback){
+		request('http://127.0.0.1', function(newsArray){
+			callback(newsArray);
 		});
 	}
-		
+
+	/*trimit un request catre adresa ip */
 	this.sendToCalendar = function(event,callback){
 		console.info("getLocatie called");
 		request.post('http://127.0.0.1:3232',event,function(err,response,doc){
