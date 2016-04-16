@@ -60,7 +60,7 @@ function GetInfo(){
 		});
 	}
 
-	/*nu primesc nimic ca parametru si returnez evenimentele din toata tara*/
+	/*nu primesc parametru si returnez evenimentele din toata tara*/
 	this.getGlobalNews = function(callback){
 		request('http://127.0.0.1', function(newsArray){
 			callback(newsArray);
