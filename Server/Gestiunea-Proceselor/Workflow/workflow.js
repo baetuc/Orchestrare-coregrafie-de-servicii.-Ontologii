@@ -78,7 +78,7 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
 */
   var getHealthAdvicesFromCalendarCountry = function(data, callback) {
     api.getEvent(data, function(locatie) {
-      api.getInfoAboutHealth(locatie['tara'], vreme['temperatura'], function(WeatherWithHealthAdvicesArray){
+      api.getInfoAboutHealth(locatie['tara'], function(WeatherWithHealthAdvicesArray){
         return callback(WeatherWithHealthAdvicesArray);
       });
     });
