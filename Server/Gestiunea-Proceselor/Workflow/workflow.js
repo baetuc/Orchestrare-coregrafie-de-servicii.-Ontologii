@@ -36,7 +36,7 @@ function ContentHandler(){
 */
   var getHealthAdvicesFromLocation = function(callback) {
     api.getLocatie(function(doc) {
-      api.getWeatherFromLocation(doc['locatieGPS']['lat'], doc['locatieGPS']['long'], null, function(doc2) {
+      api.getVreme(doc['locatieGPS']['lat'], doc['locatieGPS']['long'], null, function(doc2) {
         api.getInfoAboutHealth(doc['tara'], doc2['temperatura'], function(HealthAdvicesArray) {
           return callback(HealthAdvicesArray);
         });
@@ -64,7 +64,7 @@ function ContentHandler(){
 */
   var getHealthAdvicesFromCalendarLocation = function(data, callback) {
     api.getEvent(function(doc) {
-      api.getWeatherFromLocation(doc['locatieGPS']['lat'], doc['locatieGPS']['long'], null, function(doc2) {
+      api.getVreme(doc['locatieGPS']['lat'], doc['locatieGPS']['long'], null, function(doc2) {
         api.getInfoAboutHealth(doc['tara'], doc2['temperatura'], function(WeatherWithHealthAdvicesArray){
           return callback(WeatherWithHealthAdvicesArray);
         });
