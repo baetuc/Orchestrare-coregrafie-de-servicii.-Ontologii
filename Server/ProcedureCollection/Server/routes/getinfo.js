@@ -16,23 +16,26 @@ function GetInfo(){
 			callback(stiriArray);
 		});
 	}
-
+	
+	// primesc tara si temperatura; trimit intr-un array sfaturi despre sanatate
 	this.getInfoAboutHealth = function(tara,temperatura,callback){
 		request('http://127.0.0.1?action=sanatate&tara=' + tara + '&temperatura=' + temperatura, function(err, response, sfaturiArray){
 			callback(sfaturiArray);
 		});
 	}
-	
-	this.getEvents = function (data,locatie,callback){
-		request('http://127.0.0.1?action=getEvents&data=' + data.getTime() + '&locatie=' + locatie, function(err, response, eventsArray){
-			callback(eventsArray);
+	// primesc o data; trimit informatii despre evenimentul de la acea data (cand incepe , cand se termina , descriere, locatie)
+	this.getEvent = function (data,callback){
+		request('http://127.0.0.1?action=getEvent&data=' + data.getTime(), function(err, response, infoAboutEvent){
+			callback(infoAboutEvent);
 		});
 	}
-	this.getEventsDays = function (data,callback){
-		request('http://127.0.0.1?action=Events&data=' + data.getTime(), function(err, response, eventsDaysArray){
-			callback(eventsDaysArray);
+	// primesc o data calendaristica; trimit un array de date ale evenimentelor din ziua respectiva 
+	this.getEventsDay= function (data,callback){
+		request('http://127.0.0.1?action=getEventsDay&data=' + data.getTime(), function(err, response, eventsDayArray){
+			callback(eventsDayArray);
 		});
 	}
+	// trimit lat si long; primesc intr-un array punctele de interes din locatia cu coordonatele respective (in array am numele si descrierea fiecaruia intr-un string)
 	this.getPointsOfInterest = function (lat, long, callback){
 		request('http://127.0.0.1?action=PointsOfInterest&lat=' + lat + '&long=' + long, function(err, response, PointsOfInterestArray){
 			callback(PointsOfInterestArray);
