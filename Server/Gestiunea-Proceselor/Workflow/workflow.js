@@ -11,8 +11,8 @@ function ContentHandler(){
 2. Folosind locatia lui, cerem modulului vreme sa afle vremea locatiei respective
 */
 	var getWatherFromLocation = function(callback){
-		api.getLocatie(function(doc){
-			api.getVreme(doc['lat'],doc['long'],null,function(vreme){
+		api.getLocatie(function(locatie){
+			api.getVreme(locatie['lat'],locatie['long'],null,function(vreme){
 				return callback(vreme);
 			});
 		});
@@ -22,8 +22,8 @@ function ContentHandler(){
 2. Folosind locatia lui, cerem modulului stiri sa afle stirile din preajma locatiei respective
 */
 	var getNewsFromLocation = function(data, callback){
-		api.getLocatie(function(doc){
-			api.getStiri(doc['oras'],function(stiriArray){
+		api.getLocatie(function(locatie){
+			api.getStiri(locatie['oras'],function(stiriArray){
 				return callback(stiriArray);
 			});
 		});
@@ -35,9 +35,9 @@ function ContentHandler(){
    modulul sanatate, sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
 */
   var getHealthAdvicesFromLocation = function(callback) {
-    api.getLocatie(function(doc) {
-      api.getVreme(doc['lat'], doc['long'], null, function(doc2) {
-        api.getInfoAboutHealth(doc['tara'], doc2['temperatura'], function(HealthAdvicesArray) {
+    api.getLocatie(function(locatie) {
+      api.getVreme(locatie['lat'], locatie['long'], null, function(vreme) {
+        api.getInfoAboutHealth(locatie['tara'], vreme['temperatura'], function(HealthAdvicesArray) {
           return callback(HealthAdvicesArray);
         });
       });
@@ -50,8 +50,8 @@ function ContentHandler(){
    modulul localizare se afla.
 */
   var getHealthAdvicesFromCountry = function(callback) {
-    api.getLocatie(function(doc) {
-      api.getInfoAboutHealth(doc['tara'], function(HealthAdvicesArray) {
+    api.getLocatie(function(locatie) {
+      api.getInfoAboutHealth(locatie['tara'], function(HealthAdvicesArray) {
         return callback(HealthAdvicesArray);
       });
     });
@@ -63,9 +63,9 @@ function ContentHandler(){
    modulul sanatate, sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
 */
   var getHealthAdvicesFromCalendarLocation = function(data, callback) {
-    api.getEvent(function(doc) {
-      api.getVreme(doc['locatieGPS']['lat'], doc['locatieGPS']['long'], null, function(doc2) {
-        api.getInfoAboutHealth(doc['tara'], doc2['temperatura'], function(WeatherWithHealthAdvicesArray){
+    api.getEvent(function(locatie) {
+      api.getVreme(locatie['locatieGPS']['lat'], locatie['locatieGPS']['long'], null, function(vreme) {
+        api.getInfoAboutHealth(locatie['tara'], vreme['temperatura'], function(WeatherWithHealthAdvicesArray){
           return callback(WeatherWithHealthAdvicesArray);
         });
       });
@@ -77,8 +77,8 @@ function ContentHandler(){
 sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
 */
   var getHealthAdvicesFromCalendarCountry = function(data, callback) {
-    api.getEvent(function(doc) {
-      api.getInfoAboutHealth(doc['tara'], doc2['temperatura'], function(WeatherWithHealthAdvicesArray){
+    api.getEvent(function(locatie) {
+      api.getInfoAboutHealth(locatie['tara'], vreme['temperatura'], function(WeatherWithHealthAdvicesArray){
         return callback(WeatherWithHealthAdvicesArray);
       });
     });
