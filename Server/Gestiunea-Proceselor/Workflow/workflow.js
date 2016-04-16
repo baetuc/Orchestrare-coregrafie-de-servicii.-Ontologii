@@ -3,6 +3,7 @@ function ContentHandler(){
 	var request = require('request')
 	var GetInfo = require('./getinfo.js')
 	var api = new GetInfo();
+	var async = require('async');
 	this.sayHello = function(req,res,next){
 	 	return res.send("Salut!");
 	}
