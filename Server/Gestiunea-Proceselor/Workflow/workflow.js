@@ -176,7 +176,10 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
       });
     });
   }
-
+/*
+1. Cerem modulului locatie sa ne dea locatia lor
+2. In paralel, avand locatia, vom cere informatii de la celelalte module
+*/
   var getAllFromLocation = function(callback) {
     api.getLocatie(function(locatie){
       var vreme;
@@ -201,11 +204,15 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
         finalResult['stiri'] = stiri;
         finalResult['sanatate'] = sfaturiSanatate;
         finalResult['poi'] = locuriDeInteres;
+        return callback(finalResult);
       });
     });
   }
-
-  var getAllFromCalendar = function(data, callback) {
+/*
+1. Cerem modulului calendar sa ne dea primul eveniment din ziua curenta
+2. In paralel, avand locatia, vom cere informatii de la celelalte module
+*/
+  var getAllFromCalendarLocation = function(data, callback) {
     api.getEvent(data, function(locatie){
       var vreme;
       var stiri;
@@ -229,6 +236,7 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
         finalResult['stiri'] = stiri;
         finalResult['sanatate'] = sfaturiSanatate;
         finalResult['poi'] = locuriDeInteres;
+        return callback(finalResult);
       });
     });
   }
@@ -246,7 +254,7 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
       			case "getNewsAndWeatherFromLocation" : getNewsAndWeatherFromLocation(function(result) {return res.send(result);}); break;
       			case "getNewsAndWeatherFromCalendar" : getNewsAndWeatherFromCalendar(function(result) {return res.send(data, result);}); break;
             		case "getAllFromLocation" : getAllFromLocation(function(result) {return res.send(result);}); break;
-            		case "getAllFromCalendar" : getAllFromCalendar(function(result) {return res.send(data, result);}); break;
+            		case "getAllFromCalendarLocation" : getAllFromCalendarLocation(function(result) {return res.send(data, result);}); break;
 		}
 	}
 }
