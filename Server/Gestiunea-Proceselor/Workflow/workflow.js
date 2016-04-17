@@ -385,6 +385,223 @@ var getPOIAndHealthAdvicesFromLocation = function(callback) {
     });
   }
 
+  var getNewsBasedOnLocationFromCalendar = function(date, callback) {
+    async.waterfall([
+      async.apply(api.getEvent,date),
+      getInfoFromNews
+    ], returnResult);
+
+    function getInfoFromNews(myEvent, callback){
+      api.getNews(myEvent['gpsLocation']['city'],myEvent['gpsLocation']['country'],callback);
+    }
+
+    function returnResult(error, newsBasedOnLocationFromCalendar) {
+        if (error) return callback(error);
+        callback(null,{news: newsBasedOnLocationFromCalendar});
+    }
+  }
+
+  /*
+  1. Cerem locatia de la modulul Locatie
+  2. Folosim locatia (mai precis, orasul) pentru a afla stirile din acea zona.
+  */
+
+  var getNewsBasedOnCurrentLocation = function(callback) {
+    async.watterfall([
+      api.getLocation,
+      getInfoFromNews
+    ], returnResult);
+
+    function getInfoFromNews(location, callback){
+      api.getNews(location['city'],location['country'],callback);
+    }
+
+    function returnResult(error, newsBasedOnCurrentLocation) {
+        if (error)
+          return callback(error);
+        callback(null,{news: newsBasedOnCurrentLocation});
+    }
+
+  }
+
+  /*
+  1. Cerem locatia de la modulul Calendar
+  2. Folosim locatia (mai precis, latitudinea si longitudinea) pentru a afla Places of Interest din acea zona.
+  */
+
+  var getPoiBasedOnLocationFromCalendar = function(date,callback) {
+    async.waterfall([
+      async.apply(api.getEvent,date),
+      getInfoFromPoi
+    ], returnResult);
+
+    function getInfoFromPoi(myEvent, callback){
+      api.getPlacesOfInterest(myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude'],callback);
+    }
+
+    function returnResult(error, poiBasedOnLocationFromCalendar) {
+        if (error) return callback(error);
+        callback(null,{poi: poiBasedOnLocationFromCalendar});
+    }
+  }
+
+  /*
+  1. Cerem locatia de la modulul Location
+  2. Folosim locatia (mai precis, latitudinea si longitudinea) pentru a afla Places of Interest din acea zona.
+  */
+
+  var getPoiBasedOnCurrentLocation = function(callback) {
+    async.watterfall([
+      api.getLocation,
+      getInfoFromPoi
+    ], returnResult);
+
+    function getInfoFromPoi(location, callback){
+      api.getPlacesOfInterest(location['latitude'],location['longitude'],callback);
+    }
+
+    function returnResult(error, poiBasedOnCurrentLocation) {
+        if (error)
+          return callback(error);
+        callback(null,{poi: poiBasedOnCurrentLocation});
+    }
+  }
+
+
+  /*
+  1. Cerem locatia de la modulul Calendar
+  2. Folosim locatia (mai precis, fie latitudinea si longitudinea, fie orasul) pentru a afla in paralel
+    - Places of Interest
+    - stiri
+    - vremea
+   din acea zona.
+  */
+
+  var getPoiWeatherNewsBasedOnLocationFromCalendar = function(date,callback) {
+    async.waterfall([
+      async.apply(api.getEvent,date),
+      parallelPoiWeatherNews
+    ], returnResult);
+
+    function parallelPoiWeatherNews(myEvent,callback){
+      async.parallel({
+        poi: async.apply(api.getPlacesOfInterest,myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude']),
+        weather: async.apply(api.getWeather,myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude'],date),
+        news: async.apply(api.getNews,myEvent['gpsLocation']['country'],myEvent['gpsLocation']['city'])
+      },
+      function(error, results){
+        if(error) return callback(error);
+        callback(null,results);
+      });
+    }
+
+    function returnResult(error, results) {
+        if (error) return callback(error);
+        callback(null,results);
+    }
+  }
+
+  /*
+  1. Cerem locatia de la modulul Location
+  2. Folosim locatia (mai precis, latitudinea si longitudinea, fie orasul) pentru a afla in paralel
+    - Places of Interest
+    - stiri
+    - vremea
+   din acea zona.
+  */
+
+  var getPoiWeatherNewsBasedOnCurrentLocation = function(callback) {
+    async.waterfall([
+      api.getLocation,
+      parallelPoiWeatherNews
+    ], returnResult);
+
+    function parallelPoiWeatherNews(location,callback){
+      async.parallel({
+        poi: async.apply(api.getPlacesOfInterest,location['latitude'],location['longitude']),
+        weather: async.apply(api.getWeather,location['latitude'],location['longitude'], null),
+        news: async.apply(api.getNews,location['country'],location['city'])
+      },
+      function(error, results){
+        if(error) return callback(error);
+        callback(null, results);
+      });
+    }
+
+    function returnResult(error, results) {
+        if (error) return callback(error);
+        callback(null,results);
+    }
+  }
+
+  /*
+  1. Cerem locatia de la modulul Calendar
+  2. Folosim locatia (mai precis, latitudinea si longitudinea, fie orasul) pentru a afla in paralel
+    - sfaturi despre sanatate
+    - stiri
+    - vremea
+   din acea zona.
+  */
+
+  var getHealthWeatherNewsBasedOnLocationFromCalendar = function(date, callback) {
+    async.waterfall([
+      async.apply(api.getEvent,date),
+      parallelHealthWeatherNews
+    ], returnResult);
+
+    function parallelHealthWeatherNews(myEvent,callback){
+      async.parallel({
+        health: async.apply(api.getInfoAboutHealth,myEvent['gpsLocation']['country'], null),
+        weather: async.apply(api.getWeather,myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude'],date),
+        news: async.apply(api.getNews,myEvent['gpsLocation']['country'],myEvent['gpsLocation']['city'])
+      },
+      function(error, results){
+        if(error) return callback(error);
+        callback(null,results);
+      });
+    }
+
+    function returnResult(error, results) {
+        if (error) return callback(error);
+        callback(null,results);
+    }
+  }
+
+
+    /*
+    1. Cerem locatia de la modulul Location
+    2. Folosim locatia (mai precis, latitudinea si longitudinea, fie orasul) pentru a afla in paralel
+      - sfaturi despre sanatate
+      - stiri
+      - vremea
+     din acea zona.
+    */
+
+    var getHealthWeatherNewsBasedOnCurrentLocation = function(callback) {
+      async.waterfall([
+        api.getLocation,
+        parallelHealthWeatherNews
+      ], returnResult);
+
+      function parallelHealthWeatherNews(location,callback){
+        async.parallel({
+          health: async.apply(api.getInfoAboutHealth,location['country'],null),
+          weather: async.apply(api.getWeather,location['latitude'],location['longitude'],null),
+          news: async.apply(api.getNews,location['country'],location['city'])
+        },
+        function(error, results){
+          if(error) return callback(error);
+          callback(null,results);
+        });
+      }
+
+      function returnResult(error, results) {
+          if (error) return callback(error);
+          callback(null,results);
+      }
+    }
+
+
 	this.generateWorkflow = function(req, res, next){
 		switch(req.query.action){
 			case "getWatherFromLocation" : getWatherFromLocation(function(result) {return res.send(result);}); break;
@@ -406,6 +623,15 @@ var getPOIAndHealthAdvicesFromLocation = function(callback) {
             		case "getPOIAndHealthAdvicesFromCalendarLocation" : getPOIAndHealthAdvicesFromCalendarLocation(req.query.data, function(result) {return res.send(result);}); break;
             		case "getPOIAndNewsFromCalendarLocation" : getPOIAndNewsFromCalendarLocation(req.query.data, function(result) {return res.send(result);}); break;
             		case "getPOIAndWeatherFromCalendarLocation" : getPOIAndWeatherFromCalendarLocation(req.query.data, function(result) {return res.send(result);}); break;
+            		case "getNewsBasedOnLocationFromCalendar" : getNewsBasedOnLocationFromCalendar(req.query.date,function(error,result) {if(error) throw error; return res.send(result);}); break;
+		        case "getNewsBasedOnCurrentLocation" : getNewsBasedOnCurrentLocation(function(error,result) {if(error) throw error; return res.send(result);}); break;
+		        case "getPoiBasedOnLocationFromCalendar" : getPoiBasedOnLocationFromCalendar(req.query.date,function(error,result) {if(error) throw error; return res.send(result);}); break;
+		        case "getPoiBasedOnCurrentLocation" : getPoiBasedOnCurrentLocation(function(error,result) {if(error) throw error; return res.send(result);}); break;
+		        case "getPoiWeatherNewsBasedOnLocationFromCalendar" : getPoiWeatherNewsBasedOnLocationFromCalendar(req.query.date,function(error,result) {if(error) throw error; return res.send(result);}); break;
+		        case "getPoiWeatherNewsBasedOnCurrentLocation" : getPoiWeatherNewsBasedOnCurrentLocation(function(error,result) {if(error) throw error; return res.send(result);}); break;
+		        case "getHealthWeatherNewsBasedOnLocationFromCalendar" : getHealthWeatherNewsBasedOnLocationFromCalendar(req.query.date,function(error,result) {if(error) throw error; return res.send(result);}); break;
+		        case "getHealthWeatherNewsBasedOnCurrentLocation" : getHealthWeatherNewsBasedOnCurrentLocation(function(error,result) {if(error) throw error; return res.send(result);}); break;
+  
 		}
 	}
 }
