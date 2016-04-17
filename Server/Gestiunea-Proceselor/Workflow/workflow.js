@@ -92,16 +92,16 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
   var getHealthAdvicesAndWeatherFromLocation = function (callback) {
     api.getLocatie(function(locatie){
       async.parallel([
-        api.getVreme(locatie['lat'], locatie['long'], null, function(vreme){
+        api.getVreme(locatie['lat'], locatie['long'], null, function(vreme, callback){
           callback(vreme);
         }),
-        api.getInfoAboutHealth(locatie['tara'], function(sanatate){
+        api.getInfoAboutHealth(locatie['tara'], function(sanatate, callback){
           callback(sanatate);
         })
       ], function(finalResult){
         finalResult['vreme'] = vreme;
         finalResult['sanatate'] = sanatate;
-        return callback(finalResult); 
+        return callback(finalResult); // inca nu stiu cum facem asta...
       });
     });
   }
@@ -113,16 +113,16 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
   var getHealthAdvicesAndWeatherFromCaldendar = function (data, callback) {
     api.getEvent(function(locatie){
       async.parallel([
-        api.getVreme(locatie['locatieGPS']['lat'], locatie['locatieGPS']['long'], null, function(vreme){
+        api.getVreme(locatie['locatieGPS']['lat'], locatie['locatieGPS']['long'], null, function(vreme, callback){
           callback(vreme);
         }),
-        api.getInfoAboutHealth(locatie['tara'], function(sanatate){
+        api.getInfoAboutHealth(locatie['tara'], function(sanatate, callback){
           callback(sanatate);
         })
       ], function(finalResult){
         finalResult['vreme'] = vreme;
         finalResult['sanatate'] = sanatate;
-        return callback(finalResult); 
+        return callback(finalResult); // inca nu stiu cum facem asta...
       });
     });
   }
@@ -134,16 +134,16 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
   var getNewsAndWeatherFromLocation = function (callback) {
     api.getLocatie(function(locatie){
       async.parallel([
-        api.getVreme(locatie['lat'], locatie['long'], null, function(vreme){
+        api.getVreme(locatie['lat'], locatie['long'], null, function(vreme, callback){
           callback(vreme);
         }),
-        api.getStiri(locatie['oras'], function(stiri){
+        api.getStiri(locatie['oras'], function(stiri, callback){
           callback(stiri);
         })
       ], function(finalResult){
         finalResult['vreme'] = vreme;
         finalResult['stiri'] = stiri;
-        return callback(finalResult); 
+        return callback(finalResult); // inca nu stiu cum facem asta...
       });
     });
   }
@@ -155,16 +155,16 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
   var getNewsAndWeatherFromCalendar = function (data, callback) {
     api.getEvent(function(locatie){
       async.parallel([
-        api.getVreme(locatie['locatieGPS']['lat'], locatie['locatieGPS']['long'], null, function(vreme){
+        api.getVreme(locatie['locatieGPS']['lat'], locatie['locatieGPS']['long'], null, function(vreme, callback){
           callback(vreme);
         }),
-        api.getStiri(locatie['oras'], function(stiri){
+        api.getStiri(locatie['oras'], function(stiri, callback){
           callback(stiri);
         })
       ], function(finalResult){
         finalResult['vreme'] = vreme;
         finalResult['stiri'] = stiri;
-        return callback(finalResult); 
+        return callback(finalResult); // inca nu stiu cum facem asta...
       });
     });
   }
