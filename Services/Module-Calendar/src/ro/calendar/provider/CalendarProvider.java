@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class CalendarProvider {
-	
+	public static ArrayList<Event> CalendarEvents =new ArrayList<Event>();
 	/**
 	 * Returns a list of events from the specified day.
 	 * 
@@ -32,6 +32,15 @@ public class CalendarProvider {
 	 * @return	true if the event has been added successfully, false if
 	 * 			there is a schedule conflict
 	 */
-	public boolean addEvent(Event event, Timestamp start, Timestamp end) { return false; }
+	public boolean addEvent(Event event) {
+		
+		try{
+			CalendarEvents.add(event);
+			return true;
+		}
+		catch(Exception e){
+			return false;
+		}
+	}
 
 }
