@@ -1,0 +1,35 @@
+{
+	"calendar":[
+{
+"nume":"Eminem Live Bucharest",
+"locatie":"Arenele Romane",
+"ora":"20:30",
+"descriere":"Eminem vine pentru prima data LIVE in Bucuresti. La ora 20:30 fanii se vor bucura de muzica rapper-ului preferat in vestitele Arene Romane. Biletele pot fi achizitionate online pe http:\\http://www.bilete.ro  sau de la magazinele aferente",
+  "pret":300,
+  "sponsor":"Samsung",
+  "organizator":"Sony Music",
+  "active":true
+},
+{
+"nume":"Carla's Dreams",
+"locatie":"Romexpo",
+"ora":"21:00",
+"descriere":"Pe 7 mai la Arenele Romane din Bucuresti (in aer liber), Global Records si BestMusic Live Concerts va invita la lansarea noului album Carla's Dreams, al doilea din cariera, NGOC. Fanii vor putea asculta piesele care au cucerit radiourile si televiziunile din Romania P.O.H.U.I, Lumea ta, Cum ne noi, Sub pielea mea, Te rog, Aripile, dar si piese noi care vor fi incluse pe albumul NGOC.",
+  "pret":65,
+  "sponsor":"Vodafone",
+  "organizator":"Global Media Music",
+  "active":true
+},
+{
+"nume":"Skrillex",
+"locatie":"Bamboo",
+"ora":"19:00",
+"descriere":"Skrillex in the mix",
+  "pret":80,
+  "sponsor":"Nescafe",
+  "organizator":"Interscope",
+  "active":false
+}
+
+	]
+}

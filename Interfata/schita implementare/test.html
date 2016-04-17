@@ -9,7 +9,7 @@
 	
 	<header>
   
-	<script>
+	<!--<script>
 	var height = document.documentElement.scrollHeight;
 	curDown = false;
 function scroll(event){
@@ -21,19 +21,19 @@ function scroll(event){
 window.onmousemove = scroll;
 window.addEventListener('mousedown', function(e){ curDown = true;  });
 window.addEventListener('mouseup', function(e){ curDown = false; });
-	</script>
+	</script>-->
 </header>
 </head>
 <body onload="initMap()">
 	<div class="navigation">
 		<!--butoane colturi pentru acces meniu-->
-		<a href="#" class="trigger trigger-left" style="float:left" onclick="triggerLeft(event)"><span class="glyphicon glyphicon-align-justify"></span></a>
+		<a href="#" id="swipeLeft" class="trigger trigger-left" style="float:left" onclick="triggerLeft(event)"><span class="glyphicon glyphicon-align-justify"></span></a>
 		<a href="#" class="trigger trigger-right" style="float: right;" onclick="triggerRight(event)"><span class="glyphicon glyphicon-align-justify"></span></a>
 		<!--meniul din bara sus -->
 		<div class="container">
 			<div class="nav">
-				<a href="#">Home</a>
-				<a href="#">Random button</a>
+				<a href="test.html">Home</a>
+				<a id="newsButton" href="#">Stiri</a>
 			</div>
 		</div>
 	</div>
@@ -49,7 +49,7 @@ window.addEventListener('mouseup', function(e){ curDown = false; });
 		
 		<!--continut principal-->
 		<div id="swipeme-main" class="panel panel-main">
-			<div class="contents">
+			<div id="leContain" class="contents">
 				<!--<h1 style="background-color:red;text-align:center;font-size:6vw">Orchestrare servicii</h1>
 				<br/>
 				<p style="text-align:center">Lorem Ipsum este pur şi simplu o machetă pentru text a industriei tipografice. Lorem Ipsum a fost macheta standard a industriei încă din secolul al XVI-lea, când un tipograf anonim a luat o planşetă de litere şi le-a amestecat pentru a crea o carte demonstrativă pentru literele respective. Nu doar că a supravieţuit timp de cinci secole, dar şi a facut saltul în tipografia electronică practic neschimbată. A fost popularizată în anii '60 odată cu ieşirea colilor Letraset care conţineau pasaje Lorem Ipsum, iar mai recent, prin programele de publicare pentru calculator, ca Aldus PageMaker care includeau versiuni de Lorem Ipsum.</p>
@@ -74,6 +74,8 @@ window.addEventListener('mouseup', function(e){ curDown = false; });
 		</div>
 	</div>
 	
+	<script src="assets/js/requestHandler.js"></script>
+
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 	<script type="text/javascript" src="assets/js/maps.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?callback=initMap" async defer></script>

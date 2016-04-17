@@ -1,0 +1,53 @@
+{
+  "vreme":[
+  {
+      "locatie":"Iasi",
+      "zi":22,
+      "luna":"octombrie",  
+      "an":2015,
+      "gradeCelsius":20,
+      "gradeFahrenheit":68,
+      "umiditate":"30%",
+      "vant":"19 km/h",
+      "precipitatii":"11%",
+      "active":true
+  },
+  {
+      "locatie":"Vaslui",
+      "zi":25,
+      "luna":"februarie",  
+      "an":2016,
+      "gradeCelsius":27,
+      "gradeFahrenheit":80,
+      "umiditate":"5%",
+      "vant":"7 km/h",
+      "precipitatii":"0%",
+      "active":true
+  },
+  {
+      "locatie":"Bucuresti",
+      "zi":13,
+      "luna":"martie",  
+      "an":2016,
+      "gradeCelsius":25,
+      "gradeFahrenheit":77,
+      "umiditate":"5%",
+      "vant":"2 km/h",
+      "precipitatii":"50%",
+      "active":true
+  },
+  {
+      "locatie":"Brasov",
+      "zi":1,
+      "luna":"aprilie",  
+      "an":2016,
+      "gradeCelsius":22,
+      "gradeFahrenheit":72,
+      "umiditate":"0%",
+      "vant":"8 km/h",
+      "precipitatii":"1%",
+      "active":false
+  }
+  
+  ]
+}
