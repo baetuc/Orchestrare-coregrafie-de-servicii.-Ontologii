@@ -7,17 +7,28 @@ function ContentHandler(){
 	this.sayHello = function(req,res,next){
 	 	return res.send("Salut!");
 	}
- /*
+	 /*
 1. Cerem locatia modulului locatie
 2. Folosind locatia lui, cerem modulului vreme sa afle vremea locatiei respective
 */
-	var getWatherFromLocation = function(callback){
+	var getWeatherFromLocation = function(callback){
 		api.getLocatie(function(locatie){
 			api.getVreme(locatie['lat'],locatie['long'],null,function(vreme){
 				return callback(vreme);
 			});
 		});
 	}
+ /*
+1.  Cerem modulului calendar sa ne dea primul eveniment din ziua curenta
+2. Folosind locatia acestuia, cerem modulului vreme sa afle vremea locatiei respective
+*/
+  var getWeatherFromCalendarLocation = function(data, callback){
+    api.getEvents(function(eveniment) {
+      api.getVreme(eveniment['locatieGPS']['lat'], eveniment['locatieGPS']['long'], null, function(vreme) {
+          return callback(vreme);
+      });
+    });
+  }
  /*
 1. Cerem locatia modulului locatie
 2. Folosind locatia lui, cerem modulului stiri sa afle stirile din preajma locatiei respective
@@ -240,10 +251,144 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
       });
     });
   }
+  /*
+1. Cerem modulului locatie sa ne dea locatia lor
+2. In paralel, avand locatia, vom cere informatii de la modulele : POI (Places Of Interest) si Sanatate (Health)
+*/
+var getPOIAndHealthAdvicesFromLocation = function(callback) {
+    api.getLocatie(function(locatie){
+      var sfaturiSanatate;
+      var locuriDeInteres;
+      async.parallel ([
+        api.getInfoAboutHealth(locatie['tara'], function(_sfaturiSanatate){
+          sfaturiSanatate = _sfaturiSanatate;
+        }),
+        api.getPointsOfInterest(locatie['lat'], locatie['long'], function (_locuriDeInteres){
+          locuriDeInteres = _locuriDeInteres;
+        })
+      ], function(finalResult){
+        finalResult['sanatate'] = sfaturiSanatate;
+        finalResult['poi'] = locuriDeInteres;
+        return callback(finalResult);
+      });
+    });
+  }
+  /*
+1. Cerem modulului locatie sa ne dea locatia lor
+2. In paralel, avand locatia, vom cere informatii de la modulele : POI (Places Of Interest) si Stiri (News)
+*/
+   var getPOIAndNewsFromLocation = function(callback) {
+    api.getLocatie(function(locatie){
+      var stiri;
+      var locuriDeInteres;
+      async.parallel ([
+        api.getStiri(locatie['oras'], function(_stiri){
+          stiri = _stiri;
+        }),
+        api.getPointsOfInterest(locatie['lat'], locatie['long'], function (_locuriDeInteres){
+          locuriDeInteres = _locuriDeInteres;
+        })
+      ], function(finalResult){
+        finalResult['stiri'] = stiri;
+        finalResult['poi'] = locuriDeInteres;
+        return callback(finalResult);
+      });
+    });
+  }
+  
+  /*
+1. Cerem modulului locatie sa ne dea locatia lor
+2. In paralel, avand locatia, vom cere informatii de la modulele : POI (Places Of Interest) si Vreme (Weather)
+*/
+   var getPOIAndWeatherFromLocation = function(callback) {
+    api.getLocatie(function(locatie){
+      var vreme;
+      var locuriDeInteres;
+      async.parallel ([
+        api.getVreme(locatie['lat'], locatie['long'], null, function(_vreme){
+          vreme = _vreme;
+        }),
+        api.getPointsOfInterest(locatie['lat'], locatie['long'], function (_locuriDeInteres){
+          locuriDeInteres = _locuriDeInteres;
+        })
+      ], function(finalResult){
+        finalResult['vreme'] = vreme;
+        finalResult['poi'] = locuriDeInteres;
+        return callback(finalResult);
+      });
+    });
+  }
+ /*
+1. Cerem modulului calendar sa ne dea primul eveniment din ziua curenta
+2. In paralel, avand locatia, vom cere informatii de la modulele : POI (Places Of Interest) si Sanatate (Health)
+*/
+ var getPOIAndHealthAdvicesFromCalendarLocation = function(data, callback) {
+    api.getEvent(data, function(eveniment){
+      var sfaturiSanatate;
+      var locuriDeInteres;
+      async.parallel ([
+        api.getInfoAboutHealth(eveniment['tara'], function(_sfaturiSanatate){
+          sfaturiSanatate = _sfaturiSanatate;
+        }),
+        api.getPointsOfInterest(eveniment['locatieGPS']['lat'], eveniment['locatieGPS']['long'], function (_locuriDeInteres){
+          locuriDeInteres = _locuriDeInteres;
+        })
+      ], function(finalResult){
+        finalResult['sanatate'] = sfaturiSanatate;
+        finalResult['poi'] = locuriDeInteres;
+        return callback(finalResult);
+      });
+    });
+  }
+ /*
+1. Cerem modulului calendar sa ne dea primul eveniment din ziua curenta
+2. In paralel, avand locatia, vom cere informatii de la modulele : POI (Places Of Interest) si Stiri (News)
+*/ 
+   var getPOIAndNewsFromCalendarLocation = function(data, callback) {
+    api.getEvent(data, function(eveniment){
+      var stiri;
+      var locuriDeInteres;
+      async.parallel ([
+        api.getStiri(eveniment['oras'], function(_stiri){
+          stiri = _stiri;
+        }),
+        api.getPointsOfInterest(eveniment['locatieGPS']['lat'], eveniment['locatieGPS']['long'], function (_locuriDeInteres){
+          locuriDeInteres = _locuriDeInteres;
+        })
+      ], function(finalResult){
+        finalResult['stiri'] = stiri;
+        finalResult['poi'] = locuriDeInteres;
+        return callback(finalResult);
+      });
+    });
+  }
+ /*
+1. Cerem modulului calendar sa ne dea primul eveniment din ziua curenta
+2. In paralel, avand locatia, vom cere informatii de la modulele : POI (Places Of Interest) si Vreme (Weather)
+*/ 
+   var getPOIAndWeatherFromCalendarLocation = function(data, callback) {
+    api.getEvent(data, function(eveniment){
+      var vreme;
+      var locuriDeInteres;
+      async.parallel ([
+        api.getVreme(eveniment['locatieGPS']['lat'], eveniment['locatieGPS']['long'], null, function(_vreme){
+          vreme = _vreme;
+        }),
+        api.getPointsOfInterest(eveniment['locatieGPS']['lat'], eveniment['locatieGPS']['long'], function (_locuriDeInteres){
+          locuriDeInteres = _locuriDeInteres;
+        })
+      ], function(finalResult){
+        finalResult['vreme'] = vreme;
+        finalResult['poi'] = locuriDeInteres;
+        return callback(finalResult);
+      });
+    });
+  }
 
 	this.generateWorkflow = function(req, res, next){
 		switch(req.query.action){
 			case "getWatherFromLocation" : getWatherFromLocation(function(result) {return res.send(result);}); break;
+			case "getWatherFromCalendarLocation" : getWatherFromCalendarLocation(req.query.data, function(result) {return res.send(result);}); break;
 			case "getNewsFromLocation" : getNewsFromLocation(function(result) {return res.send(result);}); break;
       			case "getHeathAdvicesFromLocation" : getHeathAdvicesFromLocation(function(result) {return res.send(result);}); break;
       			case "getHealthAdvicesFromCountry" : getHealthAdvicesFromCountry(function(result) {return res.send(result);}); break;
@@ -255,6 +400,12 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
       			case "getNewsAndWeatherFromCalendar" : getNewsAndWeatherFromCalendar(req.query.data, function(result) {return res.send(result);}); break;
             		case "getAllFromLocation" : getAllFromLocation(function(result) {return res.send(result);}); break;
             		case "getAllFromCalendar" : getAllFromCalendar(function(req.query.data, result) {return res.send(result);}); break;
+            		case "getPOIAndHealthAdvicesFromLocation" : getPOIAndHealthAdvicesFromLocation(function(result) {return res.send(result);}); break;
+            		case "getPOIAndNewsFromLocation" : getPOIAndNewsFromLocation(function(result) {return res.send(result);}); break;
+            		case "getPOIAndWeatherFromLocation" : getPOIAndWeatherFromLocation(function(result) {return res.send(result);}); break;
+            		case "getPOIAndHealthAdvicesFromCalendarLocation" : getPOIAndHealthAdvicesFromCalendarLocation(req.query.data, function(result) {return res.send(result);}); break;
+            		case "getPOIAndNewsFromCalendarLocation" : getPOIAndNewsFromCalendarLocation(req.query.data, function(result) {return res.send(result);}); break;
+            		case "getPOIAndWeatherFromCalendarLocation" : getPOIAndWeatherFromCalendarLocation(req.query.data, function(result) {return res.send(result);}); break;
 		}
 	}
 }
