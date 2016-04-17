@@ -246,15 +246,15 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
 			case "getWatherFromLocation" : getWatherFromLocation(function(result) {return res.send(result);}); break;
 			case "getNewsFromLocation" : getNewsFromLocation(function(result) {return res.send(result);}); break;
       			case "getHeathAdvicesFromLocation" : getHeathAdvicesFromLocation(function(result) {return res.send(result);}); break;
-      			case "getHealthAdvicesFromCountry" : getHealthAdvicesFromCountry(function(result) {return res.send(data, result);}); break;
-  			case "getHealthAdvicesFromCalendarLocation" : getHealthAdvicesFromCalendarLocation(function(result) {return res.send(result);}); break;
-      			case "getHealthAdvicesFromCalendarCountry" : getHealthAdvicesFromCalendarCountry(function(result) {return res.send(data, result);}); break;
+      			case "getHealthAdvicesFromCountry" : getHealthAdvicesFromCountry(function(result) {return res.send(result);}); break;
+  			case "getHealthAdvicesFromCalendarLocation" : getHealthAdvicesFromCalendarLocation(req.query.data, function(result) {return res.send(result);}); break;
+      			case "getHealthAdvicesFromCalendarCountry" : getHealthAdvicesFromCalendarCountry(req.query.data, function(result) {return res.send(result);}); break;
       			case "getHealthAdvicesAndWeatherFromLocation" : getHealthAdvicesAndWeatherFromLocation(function(result) {return res.send(result);}); break;
-      			case "getHealthAdvicesAndWeatherFromCalendar" : getHealthAdvicesAndWeatherFromCalendar(function(result) {return res.send(data, result);}); break;
+      			case "getHealthAdvicesAndWeatherFromCalendar" : getHealthAdvicesAndWeatherFromCalendar(req.query.data, function(result) {return res.send(result);}); break;
       			case "getNewsAndWeatherFromLocation" : getNewsAndWeatherFromLocation(function(result) {return res.send(result);}); break;
-      			case "getNewsAndWeatherFromCalendar" : getNewsAndWeatherFromCalendar(function(result) {return res.send(data, result);}); break;
+      			case "getNewsAndWeatherFromCalendar" : getNewsAndWeatherFromCalendar(req.query.data, function(result) {return res.send(result);}); break;
             		case "getAllFromLocation" : getAllFromLocation(function(result) {return res.send(result);}); break;
-            		case "getAllFromCalendarLocation" : getAllFromCalendarLocation(function(result) {return res.send(data, result);}); break;
+            		case "getAllFromCalendar" : getAllFromCalendar(function(req.query.data, result) {return res.send(result);}); break;
 		}
 	}
 }
