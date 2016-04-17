@@ -13,9 +13,9 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
 		HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
-        server.createContext("/", new CalendarHttpHandler());
-        server.setExecutor(null); // creates a default executor
-        server.start();
+		server.createContext("/", new CalendarHttpHandler());
+		server.setExecutor(null); // creates a default executor
+		server.start();
 	}
 
 }
