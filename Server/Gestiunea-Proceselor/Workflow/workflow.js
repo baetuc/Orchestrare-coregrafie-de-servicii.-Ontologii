@@ -600,6 +600,252 @@ var getPOIAndHealthAdvicesFromLocation = function(callback) {
           callback(null,results);
       }
     }
+    
+    /* ------------------------------------- New Workflow ---------------------------------------- */
+
+/* Workflow that receives a date as a parameter and returns a list of events
+  from calendar which are assigned to the specified date
+*/
+var getEventsFromDay = function (date, callback) {
+  api.getEventsDay(date, function(err, result) {
+    if(err) return callback(err);
+    callback({events : result});
+  });
+}
+
+     /* ------------------------------------- New Workflow ---------------------------------------- */
+/*
+  Workflow that doesn't receive any parameter and return the client's current
+  location
+*/
+var getCurrentLocation = function(callback) {
+  api.getLocation(function(err, result) {
+    if(err) return callback(err);
+    callback({location : result});
+  });//return json
+}
+
+	/* ------------------------------------- New Workflow ---------------------------------------- */
+/*
+  Workflow that takes the general news, without any filtering
+*/
+var getGlobalNews = function(callback) {
+  api.getGlobalNews(function(err, result) {
+    if(err) return callback(err);
+    callback({news : result});
+  });//return json
+}
+
+	/* ------------------------------------- New Workflow ---------------------------------------- */
+/*
+  Workflow that returns to the client a JSON representation of the news and
+  health advices, based on the client's current location
+*/
+var getHealthAndNewsBasedOnCurrentLocation = function(callback) {
+  async.waterfall([
+    api.getLocation,
+    parallelHealthAndNews
+    ], // end of async.waterfall functions array
+    function(err, result) { // the callback function of async.waterfall
+      if(err) return callback(err);
+      callback(null, result);
+    }
+  );
+
+  /* Function that returns a JSON representation of news and health advices,
+    based on the location received from the output of api.getLocation method,
+    and passed as parameter via async.waterfall.
+  */
+  function parallelHealthAndNews(location, callback) {
+    async.parallel(
+      {
+        health : async.apply(api.getInfoAboutHealth, location.country, null),
+        news : async.apply(api.getNews, location.country, location.city) // de modificat la Maza, de pus si tara
+      },
+      function(err, result) {
+        if(err) return callback(err);
+        callback(null, result);
+      }
+    ); // end of async.parallel
+  }
+}
+
+	/* ------------------------------------- New Workflow ---------------------------------------- */
+/*
+  Workflow that returns to the client a JSON representation of the news and
+  health advices, based on the location of the calendar event given by user as
+  query parameter
+*/
+var getHealthAndNewsBasedOnLocationFromCalendar = function(date, callback) {
+  async.waterfall([
+    async.apply(api.getEvent, date), // returns a JSON representation of the event
+    parallelHealthAndNewsFromEvent
+    ], // end of async.waterfall functions array
+    function(err, result) { // the callback function of async.waterfall
+      if(err) return callback(err);
+      callback(null, result);
+    }
+  );
+
+  /* Function that returns a JSON representation of news and health advices,
+    based on the location of the event received from the output of
+    api.getEvent method, and passed as parameter via async.waterfall.
+  */
+  function parallelHealthAndNewsFromEvent(myEvent, callback) {
+    async.parallel(
+      {
+        health : async.apply(api.getInfoAboutHealth, myEvent.gpsLocation.country, null),
+        news : async.apply(api.getNews, myEvent.gpsLocation.country, myEvent.gpsLocation.city)
+      },
+      function(err, result) {
+        if(err) return callback(err);
+        callback(null, result);
+      }
+    ); // end of async.parallel
+  }
+}
+
+	/* ------------------------------------- New Workflow ---------------------------------------- */
+/*
+  Workflow that returns to the Client a JSON representation of the News,
+  Health Advices and Places of Interest based on the client's current location
+*/
+var getHealthNewsAndPOIBasedOnCurrentLocation = function(callback) {
+  async.waterfall([
+    api.getLocation,
+    parallelHealthNewsAndPOI
+    ], // end of async.waterfall functions array
+    function(err, result) { // the callback function of async.waterfall
+      if(err) return callback(err);
+      callback(null, result);
+    }
+  );
+
+  /* Function that returns a JSON representation of news, health advices and
+    Places of Interest, based on the location received from the output of
+    api.getLocation method, and passed as parameter via async.waterfall.
+  */
+  function parallelHealthNewsAndPOI(location, callback) {
+    async.parallel(
+      {
+        health : async.apply(api.getInfoAboutHealth, location.country, null),
+        news : async.apply(api.getNews, location.country, location.city),
+        poi : async.apply(api.getPlacesOfInterest, location.latitude, location.longitude)
+      },
+      function(err, result) {
+        if(err) return callback(err);
+        callback(null, result);
+      }
+    ); // end of async.parallel
+  }
+}
+
+	/* ------------------------------------- New Workflow ---------------------------------------- */
+/*
+  Workflow that returns to the client a JSON representation of the News,
+  Health Advices and Places of Interest, based on the location of the calendar
+  event given by user as query parameter.
+*/
+var getHealthNewsAndPOIBasedOnLocationFromCalendar = function(date, callback) {
+  async.waterfall([
+    async.apply(api.getEvent, date), // returns a JSON representation of the event
+    parallelHealthNewsAndPOIFromEvent
+    ], // end of async.waterfall functions array
+    function(err, result) { // the callback function of async.waterfall
+      if(err) return callback(err);
+      callback(null, result);
+    }
+  );
+
+  /* Function that returns a JSON representation of News, Health Advices
+    based on the location of the event received from the output of
+    api.getEvent method, and passed as parameter via async.waterfall.
+  */
+  function parallelHealthNewsAndPOIFromEvent(myEvent, callback) {
+    async.parallel(
+      {
+        health : async.apply(api.getInfoAboutHealth, myEvent.gpsLocation.country, null),
+        news : async.apply(api.getNews, myEvent.gpsLocation.country, myEvent.gpsLocation.city),
+        poi : async.apply(api.getPlacesOfInterest, myEvent.gpsLocation.latitude, myEvent.gpsLocation.longitude)
+      },
+      function(err, result) {
+        if(err) return callback(err);
+        callback(null, result);
+      }
+    ); // end of async.parallel
+  }
+}
+
+	/* ------------------------------------- New Workflow ---------------------------------------- */
+/*
+  Workflow that returns to the Client a JSON representation of the Weather,
+  Health Advices and Places of Interest based on the client's current location
+*/
+var getHealthWeatherAndPOIBasedOnCurrentLocation = function(callback) {
+  async.waterfall([
+    api.getLocation,
+    parallelHealthWeatherAndPOI
+    ], // end of async.waterfall functions array
+    function(err, result) { // the callback function of async.waterfall
+      if(err) return callback(err);
+      callback(null, result);
+    }
+  );
+
+  /* Function that returns a JSON representation of news, health advices and
+    Places of Interest, based on the location received from the output of
+    api.getLocation method, and passed as parameter via async.waterfall.
+  */
+  function parallelHealthWeatherAndPOI(location, callback) {
+    async.parallel(
+      {
+        health : async.apply(api.getInfoAboutHealth, location.country, null),
+        weather : async.apply(api.getWeather, location.latitude, location.longitude, null),
+        poi : async.apply(api.getPlacesOfInterest, location.latitude, location.longitude)
+      }, // NU AR MERGE DOAR CALLBACK AICI, IN LOC DE CARNAT?
+      function(err, result) {
+        if(err) return callback(err);
+        callback(null, result);
+      }
+    ); // end of async.parallel
+  }
+}
+
+	/* ------------------------------------- New Workflow ---------------------------------------- */
+/*
+  Workflow that returns to the client a JSON representation of the Weather,
+  Health Advices and Places of Interest, based on the location of the calendar
+  event given by user as query parameter.
+*/
+var getHealthWeatherAndPOIBasedOnLocationFromCalendar = function(date, callback) {
+  async.waterfall([
+    async.apply(api.getEvent, date), // returns a JSON representation of the event
+    parallelHealthWeatherAndPOIFromEvent
+    ], // end of async.waterfall functions array
+    function(err, result) { // the callback function of async.waterfall
+      if(err) return callback(err);
+      callback(null, result);
+    }
+  );
+
+  /* Function that returns a JSON representation of Weather, Health Advices and
+    Places of Interest, based on the location of the event received from the
+    output of api.getEvent method, and passed as parameter via async.waterfall.
+  */
+  function parallelHealthWeatherAndPOIFromEvent(myEvent, callback) {
+    async.parallel(
+      {
+        health : async.apply(api.getInfoAboutHealth, myEvent.gpsLocation.country, null),
+        weather : async.apply(api.getWeather, myEvent.gpsLocation.latitude, myEvent.gpsLocation.longitude, date),
+        poi : async.apply(api.getPlacesOfInterest, myEvent.gpsLocation.latitude, myEvent.gpsLocation.longitude)
+      },
+      function(err, result) {
+        if(err) return callback(err);
+        callback(null, result);
+      }
+    ); // end of async.parallel
+  }
+}
 
 
 	this.generateWorkflow = function(req, res, next){
@@ -631,7 +877,16 @@ var getPOIAndHealthAdvicesFromLocation = function(callback) {
 		        case "getPoiWeatherNewsBasedOnCurrentLocation" : getPoiWeatherNewsBasedOnCurrentLocation(function(error,result) {if(error) throw error; return res.send(result);}); break;
 		        case "getHealthWeatherNewsBasedOnLocationFromCalendar" : getHealthWeatherNewsBasedOnLocationFromCalendar(req.query.date,function(error,result) {if(error) throw error; return res.send(result);}); break;
 		        case "getHealthWeatherNewsBasedOnCurrentLocation" : getHealthWeatherNewsBasedOnCurrentLocation(function(error,result) {if(error) throw error; return res.send(result);}); break;
-  
+  			case "getEventsFromDay" : getEventsFromDay(req.query.date, function(err, result) {if(err) throw err; return res.send(result);}); break;
+			case "getCurrentLocation" : getCurrentLocation(function(err, result) {if(err) throw err; return res.send(result);}); break;
+			case "getGlobalNews" : getGlobalNews(function(err, result) {if(err) throw err; return res.send(result);}); break;
+			case "getHealthAndNewsBasedOnCurrentLocation" : getHealthAndNewsBasedOnCurrentLocation(function(err, result) {if(err) throw err; return res.send(result);}); break;
+			case "getHealthAndNewsBasedOnLocationFromCalendar" : getHealthAndNewsBasedOnLocationFromCalendar(req.query.date, function(err, result) {if(err) throw err; return res.send(result);}); break;
+			case "getHealthNewsAndPOIBasedOnCurrentLocation" : getHealthNewsAndPOIBasedOnCurrentLocation(function(err, result) {if(err) throw err; return res.send(result);}); break;
+			case "getHealthNewsAndPOIBasedOnLocationFromCalendar" : getHealthNewsAndPOIBasedOnLocationFromCalendar(req.query.date, function(err, result) {if(err) throw err; return res.send(result);}); break;
+			case "getHealthWeatherAndPOIBasedOnCurrentLocation" : getHealthWeatherAndPOIBasedOnCurrentLocation(function(err, result) {if(err) throw err; return res.send(result);}); break;
+			case "getHealthWeatherAndPOIBasedOnLocationFromCalendar" : getHealthWeatherAndPOIBasedOnLocationFromCalendar(req.query.date, function(err, result) {if(err) throw err; return res.send(result);}); break;
+
 		}
 	}
 }
