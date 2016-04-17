@@ -20,9 +20,9 @@ public class CalendarProvider {
 		cObj1.setTime(day);
 		for(Event e:CalendarEvents){
 			cObj2.setTime(e.getStartTime());
-			if(cObj1.get(Calendar.DAY_OF_MONTH)==cObj1.get(Calendar.DAY_OF_MONTH)&&
-					cObj1.get(Calendar.MONTH)==cObj1.get(Calendar.MONTH)&&
-					cObj1.get(Calendar.YEAR)==cObj1.get(Calendar.YEAR)){
+			if(cObj1.get(Calendar.DAY_OF_MONTH)==cObj2.get(Calendar.DAY_OF_MONTH)&&
+					cObj1.get(Calendar.MONTH)==cObj2.get(Calendar.MONTH)&&
+					cObj1.get(Calendar.YEAR)==cObj2.get(Calendar.YEAR)){
 						toReturn.add(e);
 			}
 		}
@@ -44,8 +44,8 @@ public class CalendarProvider {
 		cObj1.setTime(month);
 		for(Event e:CalendarEvents){
 			cObj2.setTime(e.getStartTime());
-			if(cObj1.get(Calendar.MONTH)==cObj1.get(Calendar.MONTH)&&
-					cObj1.get(Calendar.YEAR)==cObj1.get(Calendar.YEAR)){
+			if(cObj1.get(Calendar.MONTH)==cObj2.get(Calendar.MONTH)&&
+					cObj1.get(Calendar.YEAR)==cObj2.get(Calendar.YEAR)){
 						toReturn.add(e.getStartTime());
 			}
 		}
@@ -54,6 +54,26 @@ public class CalendarProvider {
 		}
 		return toReturn;
 	}
+	/**
+	 * Returns a specific event that matches the timestamp.
+	 * 
+	 * @param 	eventTime	A timestamp that indicates a single event.
+	 * @return	A single event that takes place at exactly the specified time.
+	 */
+	
+	public Event getSpecificEvent(Timestamp eventTime) { 
+		Event toReturn;
+		for(Event e:CalendarEvents){
+			if(eventTime.equals(e.getStartTime())){
+				toReturn=e;
+				return toReturn;
+			}
+		}
+		
+		return null;
+	}
+	
+	
 	
 	
 	/**
