@@ -1,6 +1,6 @@
 function ContentHandler(){
 	var that = this;
-  var async = require('async');
+  	var async = require('async');
 	var request = require('request')
 	var GetInfo = require('./getinfo.js')
 	var api = new GetInfo();
@@ -94,9 +94,11 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
       var vreme;
       var sanatate;
       async.parallel([
-        api.getVreme(locatie['lat'], locatie['long'], null, function(vreme){
+        api.getVreme(locatie['lat'], locatie['long'], null, function(_vreme){
+          vreme = _vreme;
         }),
-        api.getInfoAboutHealth(locatie['tara'], function(sanatate){
+        api.getInfoAboutHealth(locatie['tara'], function(_sanatate){
+          sanatete = _sanatate;
         })
       ], function(finalResult){
         finalResult['vreme'] = vreme;
@@ -115,9 +117,11 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
       var vreme;
       var sanatate;
       async.parallel([
-        api.getVreme(locatie['locatieGPS']['lat'], locatie['locatieGPS']['long'], null, function(vreme){
+        api.getVreme(locatie['locatieGPS']['lat'], locatie['locatieGPS']['long'], null, function(_vreme){
+          vreme = _vreme;
         }),
-        api.getInfoAboutHealth(locatie['tara'], function(sanatate){
+        api.getInfoAboutHealth(locatie['tara'], function(_sanatate){
+          sanatate = _sanatate;
         })
       ], function(finalResult){
         finalResult['vreme'] = vreme;
@@ -136,9 +140,11 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
       var vreme;
       var stiri;
       async.parallel([
-        api.getVreme(locatie['lat'], locatie['long'], null, function(vreme){
+        api.getVreme(locatie['lat'], locatie['long'], null, function(_vreme){
+          vreme = _vreme;
         }),
-        api.getStiri(locatie['oras'], function(stiri){
+        api.getStiri(locatie['oras'], function(_stiri){
+          stiri = _stiri;
         })
       ], function(finalResult){
         finalResult['vreme'] = vreme;
@@ -157,9 +163,11 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
       var vreme;
       var stiri;
       async.parallel([
-        api.getVreme(locatie['locatieGPS']['lat'], locatie['locatieGPS']['long'], null, function(vreme){
+        api.getVreme(locatie['locatieGPS']['lat'], locatie['locatieGPS']['long'], null, function(_vreme){
+          vreme = _vreme;
         }),
-        api.getStiri(locatie['oras'], function(stiri){
+        api.getStiri(locatie['oras'], function(_stiri){
+          stiri = _stiri;
         })
       ], function(finalResult){
         finalResult['vreme'] = vreme;
