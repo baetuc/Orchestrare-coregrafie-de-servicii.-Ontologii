@@ -64,7 +64,7 @@ function ContentHandler(){
    modulul sanatate, sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
 */
   var getHealthAdvicesFromCalendarLocation = function(data, callback) {
-    api.getEvent(function(locatie) {
+    api.getEvent(data, function(locatie) {
       api.getVreme(locatie['locatieGPS']['lat'], locatie['locatieGPS']['long'], null, function(vreme) {
         api.getInfoAboutHealth(locatie['tara'], vreme['temperatura'], function(WeatherWithHealthAdvicesArray){
           return callback(WeatherWithHealthAdvicesArray);
@@ -78,7 +78,7 @@ function ContentHandler(){
 sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
 */
   var getHealthAdvicesFromCalendarCountry = function(data, callback) {
-    api.getEvent(function(locatie) {
+    api.getEvent(data, function(locatie) {
       api.getInfoAboutHealth(locatie['tara'], function(WeatherWithHealthAdvicesArray){
         return callback(WeatherWithHealthAdvicesArray);
       });
@@ -92,17 +92,17 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
   var getHealthAdvicesAndWeatherFromLocation = function (callback) {
     api.getLocatie(function(locatie){
       var vreme;
-      var sanatate;
+      var sfaturiSanatate;
       async.parallel([
         api.getVreme(locatie['lat'], locatie['long'], null, function(_vreme){
           vreme = _vreme;
         }),
-        api.getInfoAboutHealth(locatie['tara'], function(_sanatate){
-          sanatete = _sanatate;
+        api.getInfoAboutHealth(locatie['tara'], function(_sfaturiSanatate){
+          sfaturiSanatate = _sfaturiSanatate;
         })
       ], function(finalResult){
         finalResult['vreme'] = vreme;
-        finalResult['sanatate'] = sanatate;
+        finalResult['sanatate'] = sfaturiSanatate;
         return callback(finalResult);
       });
     });
@@ -113,19 +113,19 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
    si informatii despre vreme de la modulul vreme.
 */
   var getHealthAdvicesAndWeatherFromCaldendar = function (data, callback) {
-    api.getEvent(function(locatie){
+    api.getEvent(data, function(locatie){
       var vreme;
-      var sanatate;
+      var sfaturiSanatate;
       async.parallel([
         api.getVreme(locatie['locatieGPS']['lat'], locatie['locatieGPS']['long'], null, function(_vreme){
           vreme = _vreme;
         }),
-        api.getInfoAboutHealth(locatie['tara'], function(_sanatate){
-          sanatate = _sanatate;
+        api.getInfoAboutHealth(locatie['tara'], function(_sfaturiSanatate){
+          sfaturiSanatate = _sfaturiSanatate;
         })
       ], function(finalResult){
         finalResult['vreme'] = vreme;
-        finalResult['sanatate'] = sanatate;
+        finalResult['sanatate'] = sfaturiSanatate;
         return callback(finalResult);
       });
     });
@@ -159,7 +159,7 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
    si informatii despre vreme de la modulul vreme.
 */
   var getNewsAndWeatherFromCalendar = function (data, callback) {
-    api.getEvent(function(locatie){
+    api.getEvent(data, function(locatie){
       var vreme;
       var stiri;
       async.parallel([
@@ -177,6 +177,62 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
     });
   }
 
+  var getAllFromLocation = function(callback) {
+    api.getLocatie(function(locatie){
+      var vreme;
+      var stiri;
+      var sfaturiSanatate;
+      var locuriDeInteres;
+      async.parallel ([
+        api.getVreme(locatie['lat'], locatie['long'], null, function(_vreme){
+          vreme = _vreme;
+        }),
+        api.getStiri(locatie['oras'], function(_stiri){
+          stiri = _stiri;
+        }),
+        api.getInfoAboutHealth(locatie['tara'], function(_sfaturiSanatate){
+          sfaturiSanatate = _sfaturiSanatate;
+        }),
+        api.getPointsOfInterest(locatie['lat'], locatie['long'], function (_locuriDeInteres){
+          locuriDeInteres = _locuriDeInteres;
+        })
+      ], function(finalResult){
+        finalResult['vreme'] = vreme;
+        finalResult['stiri'] = stiri;
+        finalResult['sanatate'] = sfaturiSanatate;
+        finalResult['poi'] = locuriDeInteres;
+      });
+    });
+  }
+
+  var getAllFromCalendar = function(data, callback) {
+    api.getEvent(data, function(locatie){
+      var vreme;
+      var stiri;
+      var sfaturiSanatate;
+      var locuriDeInteres;
+      async.parallel ([
+        api.getVreme(locatie['locatieGPS']['lat'], locatie['locatieGPS']['long'], null, function(_vreme){
+          vreme = _vreme;
+        }),
+        api.getStiri(locatie['oras'], function(_stiri){
+          stiri = _stiri;
+        }),
+        api.getInfoAboutHealth(locatie['tara'], function(_sfaturiSanatate){
+          sfaturiSanatate = _sfaturiSanatate;
+        }),
+        api.getPointsOfInterest(locatie['locatieGPS']['lat'], locatie['locatieGPS']['long'], function (_locuriDeInteres){
+          locuriDeInteres = _locuriDeInteres;
+        })
+      ], function(finalResult){
+        finalResult['vreme'] = vreme;
+        finalResult['stiri'] = stiri;
+        finalResult['sanatate'] = sfaturiSanatate;
+        finalResult['poi'] = locuriDeInteres;
+      });
+    });
+  }
+
 	this.generateWorkflow = function(req, res, next){
 		switch(req.query.action){
 			case "getWatherFromLocation" : getWatherFromLocation(function(result) {return res.send(result);}); break;
@@ -189,6 +245,8 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
       			case "getHealthAdvicesAndWeatherFromCalendar" : getHealthAdvicesAndWeatherFromCalendar(function(result) {return res.send(data, result);}); break;
       			case "getNewsAndWeatherFromLocation" : getNewsAndWeatherFromLocation(function(result) {return res.send(result);}); break;
       			case "getNewsAndWeatherFromCalendar" : getNewsAndWeatherFromCalendar(function(result) {return res.send(data, result);}); break;
+            		case "getAllFromLocation" : getAllFromLocation(function(result) {return res.send(result);}); break;
+            		case "getAllFromCalendar" : getAllFromCalendar(function(result) {return res.send(data, result);}); break;
 		}
 	}
 }
