@@ -177,9 +177,9 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
       			case "getHealthAdvicesFromCountry" : getHealthAdvicesFromCountry(function(result) {return res.send(data, result);}); break;
   			case "getHealthAdvicesFromCalendarLocation" : getHealthAdvicesFromCalendarLocation(function(result) {return res.send(result);}); break;
       			case "getHealthAdvicesFromCalendarCountry" : getHealthAdvicesFromCalendarCountry(function(result) {return res.send(data, result);}); break;
-      			case "getHealthAdvicesAndWeatherFromLocation" : getHealthAdvicesAndWeatherFromLocation(function(result) {return res.send(data, result);}); break;
+      			case "getHealthAdvicesAndWeatherFromLocation" : getHealthAdvicesAndWeatherFromLocation(function(result) {return res.send(result);}); break;
       			case "getHealthAdvicesAndWeatherFromCalendar" : getHealthAdvicesAndWeatherFromCalendar(function(result) {return res.send(data, result);}); break;
-      			case "getNewsAndWeatherFromLocation" : getNewsAndWeatherFromLocation(function(result) {return res.send(data, result);}); break;
+      			case "getNewsAndWeatherFromLocation" : getNewsAndWeatherFromLocation(function(result) {return res.send(result);}); break;
       			case "getNewsAndWeatherFromCalendar" : getNewsAndWeatherFromCalendar(function(result) {return res.send(data, result);}); break;
 		}
 	}
