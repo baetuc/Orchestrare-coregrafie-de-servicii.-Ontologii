@@ -13,9 +13,11 @@ function ContentHandler(){
 2. Folosind locatia lui, cerem modulului vreme sa afle vremea locatiei respective
 */
 	var getWeatherFromLocation = function(callback){
-		api.getLocation(function(location){
-			api.getWeather(location['latitude'],location['longitude'],null,function(weather){
-				return callback(weather);
+		api.getLocation(function(error, location){
+			if (error) { return callback(error); }
+			api.getWeather(location['latitude'],location['longitude'],null,function(error2, weather){
+				if(error2) { return callback(error2); }
+				return callback(null, weather);
 			});
 		});
 	}
@@ -23,10 +25,12 @@ function ContentHandler(){
 1.  Cerem modulului calendar sa ne dea primul eveniment din ziua curenta
 2. Folosind locatia acestuia, cerem modulului vreme sa afle vremea locatiei respective
 */
-  var getWeatherFromCalendarLocation = function(data, callback){
-    api.getEvents(function(myEvent) {
-      api.getWeather(myEvent['gpsLocation']['latitude'], myEvent['gpsLocation']['longitude'], null, function(weather) {
-          return callback(weather);
+  var getWeatherFromCalendarLocation = function(date, callback){
+    api.getEvents(function(error, myEvent) {
+      if(error) {return callback(error);}
+      api.getWeather(myEvent['gpsLocation']['latitude'], myEvent['gpsLocation']['longitude'], null, function(error2, weather) {
+      	  if (error2) { return callback(error2) };
+          return callback(null, weather);
       });
     });
   }
@@ -38,10 +42,13 @@ function ContentHandler(){
    modulul sanatate, sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
 */
   var getHealthAdvicesFromLocation = function(callback) {
-    api.getLocatie(function(locatie) {
-      api.getVreme(locatie['lat'], locatie['long'], null, function(vreme) {
-        api.getInfoAboutHealth(locatie['tara'], vreme['temperatura'], function(HealthAdvicesArray) {
-          return callback(HealthAdvicesArray);
+    api.getLocatie(function(error, locatie) {
+      if(error) {return callback(error);}
+      api.getVreme(locatie['lat'], locatie['long'], null, function(error2, vreme) {
+        if(error2) {return callback(error2);}
+        api.getInfoAboutHealth(locatie['tara'], vreme['temperatura'], function(error3, HealthAdvicesArray) {
+      	  if(error3) {return callback(error3);}
+          return callback(null, HealthAdvicesArray);
         });
       });
     });
@@ -53,9 +60,11 @@ function ContentHandler(){
    modulul localizare se afla.
 */
   var getHealthAdvicesFromCountry = function(callback) {
-    api.getLocatie(function(locatie) {
-      api.getInfoAboutHealth(locatie['tara'], function(HealthAdvicesArray) {
-        return callback(HealthAdvicesArray);
+    api.getLocatie(function(error, locatie) {
+      if(error) {return callback(error);}
+      api.getInfoAboutHealth(locatie['tara'], function(error2, HealthAdvicesArray) {
+        if(error2) {return callback(error2);}
+        return callback(null, HealthAdvicesArray);
       });
     });
   }
@@ -66,10 +75,13 @@ function ContentHandler(){
    modulul sanatate, sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
 */
   var getHealthAdvicesFromCalendarLocation = function(data, callback) {
-    api.getEvent(data, function(locatie) {
-      api.getVreme(locatie['locatieGPS']['lat'], locatie['locatieGPS']['long'], null, function(vreme) {
-        api.getInfoAboutHealth(locatie['tara'], vreme['temperatura'], function(WeatherWithHealthAdvicesArray){
-          return callback(WeatherWithHealthAdvicesArray);
+    api.getEvent(data, function(error, locatie) {
+      if(error) {return callback(error);}
+      api.getVreme(locatie['locatieGPS']['lat'], locatie['locatieGPS']['long'], null, function(error2, vreme) {
+      	if(error) {return callback(error);}
+        api.getInfoAboutHealth(locatie['tara'], vreme['temperatura'], function(error3, WeatherWithHealthAdvicesArray){
+          if(error) {return callback(error);}
+          return callback(null, WeatherWithHealthAdvicesArray);
         });
       });
     });
@@ -80,9 +92,11 @@ function ContentHandler(){
 sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
 */
   var getHealthAdvicesFromCalendarCountry = function(data, callback) {
-    api.getEvent(data, function(locatie) {
-      api.getInfoAboutHealth(locatie['tara'], function(WeatherWithHealthAdvicesArray){
-        return callback(WeatherWithHealthAdvicesArray);
+    api.getEvent(data, function(error, locatie) {
+      if(error) {return callback(error);}
+      api.getInfoAboutHealth(locatie['tara'], function(error2, WeatherWithHealthAdvicesArray){
+      	if(error) {return callback(error);}
+        return callback(null, WeatherWithHealthAdvicesArray);
       });
     });
   }
@@ -251,7 +265,7 @@ var getNewsAndWeatherFromCalendar = function (date, callback) {
 1. Cerem modulului locatie sa ne dea locatia lor
 2. In paralel, avand locatia, vom cere informatii de la modulele : POI (Places Of Interest) si Sanatate (Health)
 */
-var getPoiAndHealthFromLocation = function(callback) {
+var getPOIAndHealthFromLocation = function(callback) {
     async.waterfall([
       api.getLocation,
       parallelPoiHealth
@@ -277,7 +291,7 @@ var getPoiAndHealthFromLocation = function(callback) {
 1. Cerem modulului locatie sa ne dea locatia lor
 2. In paralel, avand locatia, vom cere informatii de la modulele : POI (Places Of Interest) si Stiri (News)
 */
-   var getPoiAndNewsFromLocation = function(callback) {
+   var getPOIAndNewsFromLocation = function(callback) {
     async.waterfall([
       api.getLocation,
       parallelPoiNews
@@ -304,7 +318,7 @@ var getPoiAndHealthFromLocation = function(callback) {
 1. Cerem modulului locatie sa ne dea locatia lor
 2. In paralel, avand locatia, vom cere informatii de la modulele : POI (Places Of Interest) si Vreme (Weather)
 */
-    var getPoiAndWeatherFromLocation = function(callback) {
+    var getPOIAndWeatherFromLocation = function(callback) {
     async.waterfall([
       api.getLocation,
       parallelPoiWeather
@@ -330,7 +344,7 @@ var getPoiAndHealthFromLocation = function(callback) {
 1. Cerem modulului calendar sa ne dea primul eveniment din ziua curenta
 2. In paralel, avand locatia, vom cere informatii de la modulele : POI (Places Of Interest) si Sanatate (Health)
 */
- var getPoiAndHealthFromCalendarLocation = function(date, callback) {
+ var getPOIAndHealthFromCalendarLocation = function(date, callback) {
     async.waterfall([
       async.apply(api.getEvent,date),
       parallelPoiHealth
@@ -357,7 +371,7 @@ var getPoiAndHealthFromLocation = function(callback) {
 1. Cerem modulului calendar sa ne dea primul eveniment din ziua curenta
 2. In paralel, avand locatia, vom cere informatii de la modulele : POI (Places Of Interest) si Stiri (News)
 */ 
-  var getPoiAndNewsFromCalendarLocation = function(date, callback) {
+  var getPOIAndNewsFromCalendarLocation = function(date, callback) {
     async.waterfall([
       async.apply(api.getEvent,date),
       parallelPoiNews
@@ -384,7 +398,7 @@ var getPoiAndHealthFromLocation = function(callback) {
 1. Cerem modulului calendar sa ne dea primul eveniment din ziua curenta
 2. In paralel, avand locatia, vom cere informatii de la modulele : POI (Places Of Interest) si Vreme (Weather)
 */ 
-    var getPoiAndWeatherFromCalendarLocation = function(date, callback) {
+    var getPOIAndWeatherFromCalendarLocation = function(date, callback) {
     async.waterfall([
       async.apply(api.getEvent,date),
       parallelPoiWeather
