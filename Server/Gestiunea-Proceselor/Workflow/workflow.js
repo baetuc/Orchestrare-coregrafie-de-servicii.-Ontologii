@@ -74,8 +74,8 @@ function ContentHandler(){
 3. Folosind date primite de la modulul calendar si de la modulul vreme, aflam de la
    modulul sanatate, sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
 */
-  var getHealthAdvicesFromCalendarLocation = function(data, callback) {
-    api.getEvent(data, function(error, locatie) {
+  var getHealthAdvicesFromCalendarLocation = function(date, callback) {
+    api.getEvent(date, function(error, locatie) {
       if(error) {return callback(error);}
       api.getVreme(locatie['locatieGPS']['lat'], locatie['locatieGPS']['long'], null, function(error2, vreme) {
       	if(error) {return callback(error);}
@@ -91,8 +91,8 @@ function ContentHandler(){
 2. Folosind date primite de la modulul calendar, aflam de la modulul sanatate,
 sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
 */
-  var getHealthAdvicesFromCalendarCountry = function(data, callback) {
-    api.getEvent(data, function(error, locatie) {
+  var getHealthAdvicesFromCalendarCountry = function(date, callback) {
+    api.getEvent(date, function(error, locatie) {
       if(error) {return callback(error);}
       api.getInfoAboutHealth(locatie['tara'], function(error2, WeatherWithHealthAdvicesArray){
       	if(error) {return callback(error);}
