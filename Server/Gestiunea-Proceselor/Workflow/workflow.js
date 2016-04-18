@@ -12,9 +12,9 @@ function ContentHandler(){
 2. Folosind locatia lui, cerem modulului vreme sa afle vremea locatiei respective
 */
 	var getWeatherFromLocation = function(callback){
-		api.getLocatie(function(locatie){
-			api.getVreme(locatie['lat'],locatie['long'],null,function(vreme){
-				return callback(vreme);
+		api.getLocation(function(location){
+			api.getWeather(location['latitude'],location['longitude'],null,function(weather){
+				return callback(weather);
 			});
 		});
 	}
@@ -23,9 +23,9 @@ function ContentHandler(){
 2. Folosind locatia acestuia, cerem modulului vreme sa afle vremea locatiei respective
 */
   var getWeatherFromCalendarLocation = function(data, callback){
-    api.getEvents(function(eveniment) {
-      api.getVreme(eveniment['locatieGPS']['lat'], eveniment['locatieGPS']['long'], null, function(vreme) {
-          return callback(vreme);
+    api.getEvents(function(myEvent) {
+      api.getWeather(myEvent['gpsLocation']['latitude'], myEvent['gpsLocation']['longitude'], null, function(weather) {
+          return callback(weather);
       });
     });
   }
