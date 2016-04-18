@@ -31,17 +31,6 @@ function ContentHandler(){
   }
  /*
 1. Cerem locatia modulului locatie
-2. Folosind locatia lui, cerem modulului stiri sa afle stirile din preajma locatiei respective
-*/
-	var getNewsFromLocation = function(data, callback){
-		api.getLocatie(function(locatie){
-			api.getStiri(locatie['oras'],function(stiriArray){
-				return callback(stiriArray);
-			});
-		});
-	}
- /*
-1. Cerem locatia modulului locatie
 2. Folosind locatia lui, cerem modulului vreme sa afle vremea locatiei respective
 3. Folosind date primite de la modulul locatie si de la modulul vreme, aflam de la
    modulul sanatate, sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
@@ -101,45 +90,55 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
    si informatii despre vreme de la modulul vreme.
 */
   var getHealthAdvicesAndWeatherFromLocation = function (callback) {
-    api.getLocatie(function(locatie){
-      var vreme;
-      var sfaturiSanatate;
-      async.parallel([
-        api.getVreme(locatie['lat'], locatie['long'], null, function(_vreme){
-          vreme = _vreme;
-        }),
-        api.getInfoAboutHealth(locatie['tara'], function(_sfaturiSanatate){
-          sfaturiSanatate = _sfaturiSanatate;
-        })
-      ], function(finalResult){
-        finalResult['vreme'] = vreme;
-        finalResult['sanatate'] = sfaturiSanatate;
-        return callback(finalResult);
+    async.waterfall([
+      api.getLocation,
+      parallelWeatherHealthAdvices
+    ], finalResult);
+    function parallelWeatherHealthAdvices(location, callback) {
+      async.parallel({
+        weather : async.apply(api.getWeather, location['latitude'], location['longitude'], null),
+        health : async.apply(api.getInfoAboutHealth, location['country'])
+      },function (error, results){
+        if(error) {
+          return callback(error);
+        }
+        callback(null, results);
       });
-    });
+    }
+    function finalResult(error, results) {
+      if(error) {
+        callback(error);
+        callback(null, results);
+      }
+    }
   }
 /*
 1. Cerem modulului calendar sa ne dea primul eveniment din ziua curenta
 2. In paralel, avand locatia din eveniment, vom cere sfaturi de la modulul sanatate
    si informatii despre vreme de la modulul vreme.
 */
-  var getHealthAdvicesAndWeatherFromCaldendar = function (data, callback) {
-    api.getEvent(data, function(locatie){
-      var vreme;
-      var sfaturiSanatate;
-      async.parallel([
-        api.getVreme(locatie['locatieGPS']['lat'], locatie['locatieGPS']['long'], null, function(_vreme){
-          vreme = _vreme;
-        }),
-        api.getInfoAboutHealth(locatie['tara'], function(_sfaturiSanatate){
-          sfaturiSanatate = _sfaturiSanatate;
-        })
-      ], function(finalResult){
-        finalResult['vreme'] = vreme;
-        finalResult['sanatate'] = sfaturiSanatate;
-        return callback(finalResult);
+  var getHealthAdvicesAndWeatherFromCaldendar = function (date, callback) {
+    async.waterfall([
+      async.apply(api.getEvent, date),
+      parallelWeatherHealthAdvices
+    ], finalResult);
+    function parallelWeatherHealthAdvices(location, callback) {
+      async.parallel({
+        weather : async.apply(api.getWeather, location['gpsLocation']['latitude'], location['gpsLocation']['longitude'], date),
+        health : async.apply(api.getInfoAboutHealth, location['country'])
+      },function (error, results){
+        if(error) {
+          return callback(error);
+        }
+        callback(null, results);
       });
-    });
+    }
+    function finalResult(error, results) {
+      if(error) {
+        callback(error);
+        callback(null, results);
+      }
+    }
   }
 /*
 1. Cerem modulului locatie sa ne dea locatia lor
@@ -147,109 +146,103 @@ sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
    si informatii despre vreme de la modulul vreme.
 */
   var getNewsAndWeatherFromLocation = function (callback) {
-    api.getLocatie(function(locatie){
-      var vreme;
-      var stiri;
-      async.parallel([
-        api.getVreme(locatie['lat'], locatie['long'], null, function(_vreme){
-          vreme = _vreme;
-        }),
-        api.getStiri(locatie['oras'], function(_stiri){
-          stiri = _stiri;
-        })
-      ], function(finalResult){
-        finalResult['vreme'] = vreme;
-        finalResult['stiri'] = stiri;
-        return callback(finalResult);
+    async.waterfall([api.getLocation,
+      parallelNewsWeather
+    ], finalResult);
+    function parallelNewsWeather(location, callback) {
+      async.parallel({
+        news : async.apply(api.getNews, location['country'], location['city']),
+        weather : async.apply(api.getWeather, location['latitude'], location['longitude'], null)
+      },
+      function(error, results) {
+        if (error) {callback(error);}
+        callback(null, results);
       });
-    });
+    }
+    function finalResult(error, results) {
+      if (error) {callback(error);}
+      callback(null, results);
+    }
   }
 /*
 1. Cerem modulului calendar sa ne dea primul eveniment din ziua curenta
 2. In paralel, avand locatia din eveniment, vom cere stiri de la modulul stiri
    si informatii despre vreme de la modulul vreme.
 */
-  var getNewsAndWeatherFromCalendar = function (data, callback) {
-    api.getEvent(data, function(locatie){
-      var vreme;
-      var stiri;
-      async.parallel([
-        api.getVreme(locatie['locatieGPS']['lat'], locatie['locatieGPS']['long'], null, function(_vreme){
-          vreme = _vreme;
-        }),
-        api.getStiri(locatie['oras'], function(_stiri){
-          stiri = _stiri;
-        })
-      ], function(finalResult){
-        finalResult['vreme'] = vreme;
-        finalResult['stiri'] = stiri;
-        return callback(finalResult);
-      });
+var getNewsAndWeatherFromCalendar = function (date, callback) {
+  async.waterfall([(api.getEvent, date),
+    parallelNewsWeather
+  ], finalResult);
+  function parallelNewsWeather(location, callback) {
+    async.parallel({
+      news : async.apply(api.getNews, location['country'], location['city']),
+      weather : async.apply(api.getWeather, location['gpsLocation']['latitude'], location['gpsLocation']['longitude'], date)
+    },
+    function(error, results) {
+      if (error) {callback(error);}
+      callback(null, results);
     });
   }
+  function finalResult(error, results) {
+    if (error) {callback(error);}
+    callback(null, results);
+  }
+}
 /*
 1. Cerem modulului locatie sa ne dea locatia lor
 2. In paralel, avand locatia, vom cere informatii de la celelalte module
 */
   var getAllFromLocation = function(callback) {
-    api.getLocatie(function(locatie){
-      var vreme;
-      var stiri;
-      var sfaturiSanatate;
-      var locuriDeInteres;
-      async.parallel ([
-        api.getVreme(locatie['lat'], locatie['long'], null, function(_vreme){
-          vreme = _vreme;
-        }),
-        api.getStiri(locatie['oras'], function(_stiri){
-          stiri = _stiri;
-        }),
-        api.getInfoAboutHealth(locatie['tara'], function(_sfaturiSanatate){
-          sfaturiSanatate = _sfaturiSanatate;
-        }),
-        api.getPointsOfInterest(locatie['lat'], locatie['long'], function (_locuriDeInteres){
-          locuriDeInteres = _locuriDeInteres;
-        })
-      ], function(finalResult){
-        finalResult['vreme'] = vreme;
-        finalResult['stiri'] = stiri;
-        finalResult['sanatate'] = sfaturiSanatate;
-        finalResult['poi'] = locuriDeInteres;
-        return callback(finalResult);
+    async.waterfall([api.getLocation,
+    parallelFinalResult
+    ], finalResult);
+    function parallelFinalResult(location, callback) {
+      async.parallel({
+        news : async.apply(api.getNews, location['country'], location['city']),
+        weather : async.apply(api.getWeather, location['latitude'], location['longitude'], null),
+        health : async.apply(api.getInfoAboutHealth, location['country']),
+        poi : async.apply(api.getPointsOfInterest, location['latitude'], location['longitude'])
+      }, function (error, results){
+        if(error) {
+          return callback(error);
+        }
+        callback(null, results);
       });
-    });
+    }
+    function finalResult(error, results) {
+      if(error) {
+        callback(error);
+        callback(null, results);
+      }
+    }
   }
-/*
-1. Cerem modulului calendar sa ne dea primul eveniment din ziua curenta
-2. In paralel, avand locatia, vom cere informatii de la celelalte module
-*/
-  var getAllFromCalendarLocation = function(data, callback) {
-    api.getEvent(data, function(locatie){
-      var vreme;
-      var stiri;
-      var sfaturiSanatate;
-      var locuriDeInteres;
-      async.parallel ([
-        api.getVreme(locatie['locatieGPS']['lat'], locatie['locatieGPS']['long'], null, function(_vreme){
-          vreme = _vreme;
-        }),
-        api.getStiri(locatie['oras'], function(_stiri){
-          stiri = _stiri;
-        }),
-        api.getInfoAboutHealth(locatie['tara'], function(_sfaturiSanatate){
-          sfaturiSanatate = _sfaturiSanatate;
-        }),
-        api.getPointsOfInterest(locatie['locatieGPS']['lat'], locatie['locatieGPS']['long'], function (_locuriDeInteres){
-          locuriDeInteres = _locuriDeInteres;
-        })
-      ], function(finalResult){
-        finalResult['vreme'] = vreme;
-        finalResult['stiri'] = stiri;
-        finalResult['sanatate'] = sfaturiSanatate;
-        finalResult['poi'] = locuriDeInteres;
-        return callback(finalResult);
+  /*
+  1. Cerem modulului calendar sa ne dea primul eveniment din ziua curenta
+  2. In paralel, avand locatia, vom cere informatii de la celelalte module
+  */
+  var getAllFromLocation = function(date, callback) {
+    async.waterfall([(api.getEvent, date),
+    parallelFinalResult
+    ], finalResult);
+    function parallelFinalResult(location, callback) {
+      async.parallel({
+        news : async.apply(api.getNews, location['country'], location['city']),
+        weather : async.apply(api.getWeather, location['gpsLocation']['latitude'], location['gpsLocation']['longitude'], null),
+        health : async.apply(api.getInfoAboutHealth, location['country']),
+        poi : async.apply(api.getPointsOfInterest, location['gpsLocation']['latitude'], location['gpsLocation']['longitude'])
+      }, function (error, results){
+        if(error) {
+          return callback(error);
+        }
+        callback(null, results);
       });
-    });
+    }
+    function finalResult(error, results) {
+      if(error) {
+        callback(error);
+        callback(null, results);
+      }
+    }
   }
   /*
 1. Cerem modulului locatie sa ne dea locatia lor
