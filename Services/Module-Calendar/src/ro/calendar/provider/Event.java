@@ -30,6 +30,7 @@ public class Event {
 		String startString = json.getString("start");
 		String endString = json.getString("end");
 		// o sa modific formatul cand o sa stabilim care e cel final
+		//TODO cand modifici formatul aici, modifica-l si in Handler - sau vedem alta solutie
 		DateFormat format = new SimpleDateFormat("MMMM d, yyyy");
 		Date startDate = null, endDate = null;
 		try {

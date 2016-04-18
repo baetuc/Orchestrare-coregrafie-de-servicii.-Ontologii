@@ -8,6 +8,21 @@ import java.util.GregorianCalendar;
 public class CalendarProvider {
 	public static ArrayList<Event> CalendarEvents =new ArrayList<Event>();
 	/**
+	 * De sters daca nu vrem sa fie singleton 
+	 */
+	
+	 private static CalendarProvider instance = null;
+	 protected CalendarProvider() {}
+	 
+	 public static CalendarProvider getInstance() {
+		 if(instance == null) {
+			 instance = new CalendarProvider();
+	      }
+	      return instance;
+	 }
+	
+	
+	/**
 	 * Returns a list of events from the specified day.
 	 * 
 	 * @param 	day	A timestamp inside the day the list of events is requested in
@@ -58,7 +73,7 @@ public class CalendarProvider {
 	 * Returns a specific event that matches the timestamp.
 	 * 
 	 * @param 	eventTime	A timestamp that indicates a single event.
-	 * @return	A single event that takes place at exactly the specified time.
+	 * @return	A single event that takes place at exactly the specified time.  
 	 */
 	
 	public Event getSpecificEvent(Timestamp eventTime) { 

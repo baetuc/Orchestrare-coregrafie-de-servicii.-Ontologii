@@ -14,10 +14,10 @@ public class Main {
 	public static final short PORT = 6969;
 
 	public static void main(String[] args) throws IOException {
-//		HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
-//		server.createContext("/", new CalendarHttpHandler());
-//		server.setExecutor(null); // creates a default executor
-//		server.start();
+		HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
+		server.createContext("/", new CalendarHttpHandler());
+		server.setExecutor(null); // creates a default executor
+		server.start();
 		
 		String str = "{ \"start\": \"January 5, 2016\", \"end\": \"June 10, 2016 \" }";
 		Event event = new Event(str);
