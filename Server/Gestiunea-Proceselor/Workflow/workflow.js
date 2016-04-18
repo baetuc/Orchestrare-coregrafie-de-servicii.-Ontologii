@@ -886,43 +886,42 @@ var getHealthWeatherAndPOIBasedOnLocationFromCalendar = function(date, callback)
 
 	this.generateWorkflow = function(req, res, next){
 		switch(req.query.action){
-			case "getWatherFromLocation" : getWatherFromLocation(function(err, result) {if(err) throw err; return res.send(result);}); break;
-                	case "getWatherFromCalendarLocation" : getWatherFromCalendarLocation(req.query.date, function(result) {return res.send(result);}); break;
-                	case "getNewsFromLocation" : getNewsFromLocation(function(err, result) {if(err) throw err; return res.send(result);}); break;
-                	case "getHeathAdvicesFromLocation" : getHeathAdvicesFromLocation(function(err, result) {if(err) throw err; return res.send(result);}); break;
-                	case "getHealthAdvicesFromCountry" : getHealthAdvicesFromCountry(function(err, result) {if(err) throw err; return res.send(result);}); break;
-                	case "getHealthAdvicesFromCalendarLocation" : getHealthAdvicesFromCalendarLocation(req.query.date, function(err, result) {if(err) throw err; return res.send(result);}); break;
-                	case "getHealthAdvicesFromCalendarCountry" : getHealthAdvicesFromCalendarCountry(req.query.date, function(err, result) {if(err) throw err; return res.send(result);}); break;
-                	case "getHealthAdvicesAndWeatherFromLocation" : getHealthAdvicesAndWeatherFromLocation(function(err, result) {if(err) throw err; return res.send(result);}); break;
-                	case "getHealthAdvicesAndWeatherFromCalendar" : getHealthAdvicesAndWeatherFromCalendar(req.query.date, function(err, result) {if(err) throw err; return res.send(result);}); break;
-                	case "getNewsAndWeatherFromLocation" : getNewsAndWeatherFromLocation(function(err, result) {if(err) throw err; return res.send(result);}); break;
-                	case "getNewsAndWeatherFromCalendar" : getNewsAndWeatherFromCalendar(req.query.date, function(err, result) {if(err) throw err; return res.send(result);}); break;
-                	case "getAllFromLocation" : getAllFromLocation(function(err, result) {if(err) throw err; return res.send(result);}); break;
-                	case "getAllFromCalendar" : getAllFromCalendar(req.query.date, function(err, result) {if(err) throw err; return res.send(result);}); break;
-                	case "getPOIAndHealthAdvicesFromLocation" : getPOIAndHealthAdvicesFromLocation(function(err, result) {if(err) throw err; return res.send(result);}); break;
-            		case "getPOIAndNewsFromLocation" : getPOIAndNewsFromLocation(function(err, result) {if(err) throw err; return res.send(result);}); break;
-            		case "getPOIAndWeatherFromLocation" : getPOIAndWeatherFromLocation(function(err, result) {if(err) throw err; return res.send(result);}); break;
-            		case "getPOIAndHealthAdvicesFromCalendarLocation" : getPOIAndHealthAdvicesFromCalendarLocation(req.query.date, function(err, result) {if(err) throw err; return res.send(result);}); break;
-            		case "getPOIAndNewsFromCalendarLocation" : getPOIAndNewsFromCalendarLocation(req.query.date, function(err, result) {if(err) throw err; return res.send(result);}); break;
-            		case "getPOIAndWeatherFromCalendarLocation" : getPOIAndWeatherFromCalendarLocation(req.query.date, function(err, result) {if(err) throw err; return res.send(result);}); break;
-			case "getNewsBasedOnLocationFromCalendar" : getNewsBasedOnLocationFromCalendar(req.query.date,function(error,result) {if(error) throw error; return res.send(result);}); break;
-		        case "getNewsBasedOnCurrentLocation" : getNewsBasedOnCurrentLocation(function(error,result) {if(error) throw error; return res.send(result);}); break;
-		        case "getPoiBasedOnLocationFromCalendar" : getPoiBasedOnLocationFromCalendar(req.query.date,function(error,result) {if(error) throw error; return res.send(result);}); break;
-		        case "getPoiBasedOnCurrentLocation" : getPoiBasedOnCurrentLocation(function(error,result) {if(error) throw error; return res.send(result);}); break;
-		        case "getPoiWeatherNewsBasedOnLocationFromCalendar" : getPoiWeatherNewsBasedOnLocationFromCalendar(req.query.date,function(error,result) {if(error) throw error; return res.send(result);}); break;
-		        case "getPoiWeatherNewsBasedOnCurrentLocation" : getPoiWeatherNewsBasedOnCurrentLocation(function(error,result) {if(error) throw error; return res.send(result);}); break;
-		        case "getHealthWeatherNewsBasedOnLocationFromCalendar" : getHealthWeatherNewsBasedOnLocationFromCalendar(req.query.date,function(error,result) {if(error) throw error; return res.send(result);}); break;
-		        case "getHealthWeatherNewsBasedOnCurrentLocation" : getHealthWeatherNewsBasedOnCurrentLocation(function(error,result) {if(error) throw error; return res.send(result);}); break;
-  			case "getEventsFromDay" : getEventsFromDay(req.query.date, function(err, result) {if(err) throw err; return res.send(result);}); break;
-			case "getCurrentLocation" : getCurrentLocation(function(err, result) {if(err) throw err; return res.send(result);}); break;
-			case "getGlobalNews" : getGlobalNews(function(err, result) {if(err) throw err; return res.send(result);}); break;
-			case "getHealthAndNewsBasedOnCurrentLocation" : getHealthAndNewsBasedOnCurrentLocation(function(err, result) {if(err) throw err; return res.send(result);}); break;
-			case "getHealthAndNewsBasedOnLocationFromCalendar" : getHealthAndNewsBasedOnLocationFromCalendar(req.query.date, function(err, result) {if(err) throw err; return res.send(result);}); break;
-			case "getHealthNewsAndPOIBasedOnCurrentLocation" : getHealthNewsAndPOIBasedOnCurrentLocation(function(err, result) {if(err) throw err; return res.send(result);}); break;
-			case "getHealthNewsAndPOIBasedOnLocationFromCalendar" : getHealthNewsAndPOIBasedOnLocationFromCalendar(req.query.date, function(err, result) {if(err) throw err; return res.send(result);}); break;
-			case "getHealthWeatherAndPOIBasedOnCurrentLocation" : getHealthWeatherAndPOIBasedOnCurrentLocation(function(err, result) {if(err) throw err; return res.send(result);}); break;
-			case "getHealthWeatherAndPOIBasedOnLocationFromCalendar" : getHealthWeatherAndPOIBasedOnLocationFromCalendar(req.query.date, function(err, result) {if(err) throw err; return res.send(result);}); break;
-
+		      	case "getWatherFromLocation" : getWatherFromLocation(function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+	              	case "getWatherFromCalendarLocation" : getWatherFromCalendarLocation(req.query.date, function(result) {return res.send(result);}); break;
+              		case "getNewsFromLocation" : getNewsFromLocation(function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+              		case "getHeathAdvicesFromLocation" : getHeathAdvicesFromLocation(function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+              		case "getHealthAdvicesFromCountry" : getHealthAdvicesFromCountry(function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+              		case "getHealthAdvicesFromCalendarLocation" : getHealthAdvicesFromCalendarLocation(req.query.date, function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+              		case "getHealthAdvicesFromCalendarCountry" : getHealthAdvicesFromCalendarCountry(req.query.date, function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+              		case "getHealthAdvicesAndWeatherFromLocation" : getHealthAdvicesAndWeatherFromLocation(function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+              		case "getHealthAdvicesAndWeatherFromCalendar" : getHealthAdvicesAndWeatherFromCalendar(req.query.date, function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+              		case "getNewsAndWeatherFromLocation" : getNewsAndWeatherFromLocation(function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+              		case "getNewsAndWeatherFromCalendar" : getNewsAndWeatherFromCalendar(req.query.date, function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+              		case "getAllFromLocation" : getAllFromLocation(function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+              		case "getAllFromCalendar" : getAllFromCalendar(req.query.date, function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+              		case "getPOIAndHealthAdvicesFromLocation" : getPOIAndHealthAdvicesFromLocation(function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+            		case "getPOIAndNewsFromLocation" : getPOIAndNewsFromLocation(function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+            		case "getPOIAndWeatherFromLocation" : getPOIAndWeatherFromLocation(function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+            		case "getPOIAndHealthAdvicesFromCalendarLocation" : getPOIAndHealthAdvicesFromCalendarLocation(req.query.date, function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+            		case "getPOIAndNewsFromCalendarLocation" : getPOIAndNewsFromCalendarLocation(req.query.date, function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+            		case "getPOIAndWeatherFromCalendarLocation" : getPOIAndWeatherFromCalendarLocation(req.query.date, function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+  			case "getNewsBasedOnLocationFromCalendar" : getNewsBasedOnLocationFromCalendar(req.query.date,function(err,result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+        		case "getNewsBasedOnCurrentLocation" : getNewsBasedOnCurrentLocation(function(err,result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+        		case "getPoiBasedOnLocationFromCalendar" : getPoiBasedOnLocationFromCalendar(req.query.date,function(err,result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+        		case "getPoiBasedOnCurrentLocation" : getPoiBasedOnCurrentLocation(function(err,result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+        		case "getPoiWeatherNewsBasedOnLocationFromCalendar" : getPoiWeatherNewsBasedOnLocationFromCalendar(req.query.date,function(err,result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+        		case "getPoiWeatherNewsBasedOnCurrentLocation" : getPoiWeatherNewsBasedOnCurrentLocation(function(err,result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+        		case "getHealthWeatherNewsBasedOnLocationFromCalendar" : getHealthWeatherNewsBasedOnLocationFromCalendar(req.query.date,function(err,result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+        		case "getHealthWeatherNewsBasedOnCurrentLocation" : getHealthWeatherNewsBasedOnCurrentLocation(function(err,result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+    			case "getEventsFromDay" : getEventsFromDay(req.query.date, function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+  			case "getCurrentLocation" : getCurrentLocation(function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+  			case "getGlobalNews" : getGlobalNews(function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+  			case "getHealthAndNewsBasedOnCurrentLocation" : getHealthAndNewsBasedOnCurrentLocation(function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+  			case "getHealthAndNewsBasedOnLocationFromCalendar" : getHealthAndNewsBasedOnLocationFromCalendar(req.query.date, function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+  			case "getHealthNewsAndPOIBasedOnCurrentLocation" : getHealthNewsAndPOIBasedOnCurrentLocation(function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+  			case "getHealthNewsAndPOIBasedOnLocationFromCalendar" : getHealthNewsAndPOIBasedOnLocationFromCalendar(req.query.date, function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+  			case "getHealthWeatherAndPOIBasedOnCurrentLocation" : getHealthWeatherAndPOIBasedOnCurrentLocation(function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
+  			case "getHealthWeatherAndPOIBasedOnLocationFromCalendar" : getHealthWeatherAndPOIBasedOnLocationFromCalendar(req.query.date, function(err, result) {if(err) return res.send({err : 'Am intampinat o eroare. Incearca din nou!'}); return res.send(result);}); break;
 		}
 	}
 }
