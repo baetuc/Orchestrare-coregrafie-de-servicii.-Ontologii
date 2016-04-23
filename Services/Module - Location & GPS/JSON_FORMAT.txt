@@ -1,0 +1,14 @@
+Noi primim get fara parametrii sau cu parametrul 
+
+"address"
+
+Dam JSONUL cu urmatoarele campuri:
+
+"latitude"
+"longitude"
+"altitude"
+"address"
+"city"
+"country"
+
+Echipa Location&GPS
