@@ -421,14 +421,14 @@ var getPOIAndHealthFromLocation = function(callback) {
     }
   }
 //---------------------------------------------------------------------------------------------------------------------------------
-  var getNewsBasedOnLocationFromCalendar = function(date, callback) {
+var getNewsBasedOnLocationFromCalendar = function(date, callback) {
     async.waterfall([
-      async.apply(api.getEvent,date),
+      async.apply(api.getSpecificEvent,date),
       getInfoFromNews
     ], returnResult);
 
     function getInfoFromNews(myEvent, callback){
-      api.getNews(myEvent['gpsLocation']['city'],myEvent['gpsLocation']['country'],callback);
+      api.getNews(myEvent['gpsLocation']['country'],myEvent['gpsLocation']['city'],callback);
     }
 
     function returnResult(error, newsBasedOnLocationFromCalendar) {
@@ -449,7 +449,7 @@ var getPOIAndHealthFromLocation = function(callback) {
     ], returnResult);
 
     function getInfoFromNews(location, callback){
-      api.getNews(location['city'],location['country'],callback);
+      api.getNews(location['country'],location['city'],callback);
     }
 
     function returnResult(error, newsBasedOnCurrentLocation) {
@@ -467,7 +467,7 @@ var getPOIAndHealthFromLocation = function(callback) {
 
   var getPoiBasedOnLocationFromCalendar = function(date,callback) {
     async.waterfall([
-      async.apply(api.getEvent,date),
+      async.apply(api.getSpecificEvent,date),
       getInfoFromPoi
     ], returnResult);
 
@@ -515,7 +515,7 @@ var getPOIAndHealthFromLocation = function(callback) {
 
   var getPoiWeatherNewsBasedOnLocationFromCalendar = function(date,callback) {
     async.waterfall([
-      async.apply(api.getEvent,date),
+      async.apply(api.getSpecificEvent,date),
       parallelPoiWeatherNews
     ], returnResult);
 
@@ -581,7 +581,7 @@ var getPOIAndHealthFromLocation = function(callback) {
 
   var getHealthWeatherNewsBasedOnLocationFromCalendar = function(date, callback) {
     async.waterfall([
-      async.apply(api.getEvent,date),
+      async.apply(api.getSpecificEvent,date),
       parallelHealthWeatherNews
     ], returnResult);
 
@@ -636,6 +636,7 @@ var getPOIAndHealthFromLocation = function(callback) {
           callback(null,results);
       }
     }
+
     
     /* ------------------------------------- New Workflow ---------------------------------------- */
 
