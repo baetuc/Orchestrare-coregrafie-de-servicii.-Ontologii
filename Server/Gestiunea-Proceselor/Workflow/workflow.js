@@ -248,28 +248,27 @@ var getNewsAndWeatherFromCalendar = function (date, callback) {
   1. Cerem modulului calendar sa ne dea primul eveniment din ziua curenta
   2. In paralel, avand locatia, vom cere informatii de la celelalte module
   */
-  var getAllFromLocation = function(date, callback) {
-    async.waterfall([(api.getEvent, date),
-    parallelFinalResult
-    ], finalResult);
-    function parallelFinalResult(location, callback) {
+  var getAllFromCalendar = function(date, callback) {
+    async.waterfall([
+      async.apply(api.getSpecificEvent,date),
+      parallelPoiHealth
+    ], returnResult);
+
+    function parallelPoiHealth(myEvent,callback){
+		if (myEvent.hasOwnProperty('err')) return callback(null, {poi:myEvent, health:myEvent, news:myEvent, health:myEvent});
       async.parallel({
-        news : async.apply(api.getNews, location['country'], location['city']),
-        weather : async.apply(api.getWeather, location['gpsLocation']['latitude'], location['gpsLocation']['longitude'], null),
-        health : async.apply(api.getInfoAboutHealth, location['country']),
-        poi : async.apply(api.getPointsOfInterest, location['gpsLocation']['latitude'], location['gpsLocation']['longitude'])
-      }, function (error, results){
-        if(error) {
-          return callback(error);
-        }
-        callback(null, results);
+		poi: async.apply(api.getPlacesOfInterest,myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude']),
+        health: async.apply(api.getInfoAboutHealth,myEvent['gpsLocation']['country'], null),
+		news: async.apply(api.getNews,myEvent['gpsLocation']['country'],myEvent['gpsLocation']['city']),
+		weather: async.apply(api.getWeather,myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude'],date)
+      },
+      function(error, results){
+        callback(null,results);
       });
     }
-    function finalResult(error, results) {
-      if(error) {
-        callback(error);
-        callback(null, results);
-      }
+
+    function returnResult(error, results) {
+        callback(null,results);
     }
   }
   //---------------------------------------------------------------------------------------------------------------------------------
