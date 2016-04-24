@@ -8,31 +8,45 @@ function ContentHandler(){
 	 	return res.send("Salut!");
 	}
 //------------------------------------------------------------------------------------------------------------------------------------
-	 /*
+/*
 1. Cerem locatia modulului locatie
 2. Folosind locatia lui, cerem modulului vreme sa afle vremea locatiei respective
 */
-	var getWeatherFromLocation = function(callback){
-		api.getLocation(function(error, location){
-			if (error) { return callback(error); }
-			api.getWeather(location['latitude'],location['longitude'],null,function(error2, weather){
-				if(error2) { return callback(error2); }
-				return callback(null, weather);
-			});
-		});
-	}
+  var getWeatherFromLocation = function(callback) {
+    async.waterfall([
+      api.getLocation,
+      getInfoWeather
+    ], returnResult);
+
+    function getInfoWeather(location, callback){
+     api.getWeather(location['latitude'],location['longitude'],null,callback);
+    }
+
+    function returnResult(error, weatherFromLocation) {
+        if (error)
+          return callback(error);
+        callback(null,{weather: weatherFromLocation});
+    }
+
+  }
  /*
 1.  Cerem modulului calendar sa ne dea primul eveniment din ziua curenta
 2. Folosind locatia acestuia, cerem modulului vreme sa afle vremea locatiei respective
 */
-  var getWeatherFromCalendarLocation = function(date, callback){
-    api.getEvents(function(error, myEvent) {
-      if(error) {return callback(error);}
-      api.getWeather(myEvent['gpsLocation']['latitude'], myEvent['gpsLocation']['longitude'], null, function(error2, weather) {
-      	  if (error2) { return callback(error2) };
-          return callback(null, weather);
-      });
-    });
+  var getWeatherFromCalendarLocation = function(date, callback) {
+    async.waterfall([
+      async.apply(api.getSpecificEvent,date),
+      getInfoWeather
+    ], returnResult);
+
+    function getInfoWeather(myEvent, callback){
+      api.getWeather(myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude'],null,callback);
+    }
+
+    function returnResult(error, weatherFromCalendarLocation) {
+        if (error) return callback(error);
+        callback(null,{weather: weatherFromCalendarLocation});
+    }
   }
 //------------------------------------------------------------------------------------------------------------------------------------
  /*
