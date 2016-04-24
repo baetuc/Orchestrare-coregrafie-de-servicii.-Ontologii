@@ -104,27 +104,31 @@ function ContentHandler(){
 2. Folosind locatia evenimentului, cerem modulului vreme sa afle vremea locatiei respective
 3. Folosind date primite de la modulul calendar si de la modulul vreme, aflam de la
    modulul sanatate, sfaturi referitoare la conditiile meteorologice prezente (daca este cazul)
-*/var getHealthAdvicesFromCalendarLocation = function(date, callback) {
-	 async.waterfall([
-	     async.apply(api.getSpecificEvent, date),
-		 getHealthAdvicesInfo
-	 ], returnResult);
+*/
+var getHealthAdvicesFromCalendarLocation = function(date, callback) {
+	 async.waterfall([ async.apply(api.getSpecificEvent, date),
+		getHealthAdvicesInfo
+	], finalResult);
 
 	 function getHealthAdvicesInfo(myEvent, callback) {
 		 if (myEvent.hasOwnProperty('err')) {
 			 return callback(null, myEvent);
 		 }
 		 async.waterfall([
-		   async.apply(api.getWeather, myEvent['gpsLocation']['latitude'], myEvent['gpsLocation']['longitude'], date)
+		   async.apply(api.getWeather, myEvent['gpsLocation']['latitude'], myEvent['gpsLocation']['longitude'], date),
+			 getPartialInfo
 		 ], partialResult);
-		 
-		 function partialResult(callback) {
+
+		 function getPartialInfo(weather, callback) {
 			 if (weather.hasOwnProperty('err')) { return callback(null, weather); }
-		     api.getInfoAboutHealth(myEvent['gpsLocation']['country'], weather['temperature'], callback);
+			 api.getInfoAboutHealth(myEvent['gpsLocation']['country'], weather['temperature'], callback);
+		 }
+
+		 function partialResult(err, partialResultInfo) {
+			 callback(null, {health: partialResultInfo});
 		 }
 	 }
-
-	 function returnResult(error, healthAdvicesArray) {
+	 function finalResult(error, healthAdvicesArray) {
 		 callback(null, healthAdvicesArray);
 	 }
  }
