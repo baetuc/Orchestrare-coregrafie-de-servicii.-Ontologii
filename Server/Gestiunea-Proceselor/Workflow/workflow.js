@@ -892,8 +892,8 @@ this.generateWorkflow = function(req, res, next){
 	 }
 
 	switch(req.query.action){
-		case "getWatherFromLocation" : getWatherFromLocation(finalCallback); break;
-		case "getWatherFromCalendarLocation" : getWatherFromCalendarLocation(req.query.date, finalCallback); break;
+		case "getWeatherFromLocation" : getWatherFromLocation(finalCallback); break;
+		case "getWeatherFromCalendarLocation" : getWatherFromCalendarLocation(req.query.date, finalCallback); break;
 		case "getHeathAdvicesFromLocation" : getHeathAdvicesFromLocation(finalCallback); break;
 		case "getHealthAdvicesFromCountry" : getHealthAdvicesFromCountry(finalCallback); break;
 		case "getHealthAdvicesFromCalendarLocation" : getHealthAdvicesFromCalendarLocation(req.query.date, finalCallback); break;
