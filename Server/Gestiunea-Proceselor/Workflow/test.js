@@ -74,14 +74,14 @@ function GetInfo(){
 	this.getSpecificEvent = function(date, callback){
 		//request('http:/127.0.0.1:6969?action=getSpecificEvent&data=' + date.getTime(), function(err, response, eventDoc){
 		console.log("Events: Am primit "+date);
-		callback(null, {start:12345555,end:12344444,startString:"start",endString:"end",description:"desc",gpsLocation:{latitude:12,longitude:133,city:"botosani",country:"romanica"}});
+		callback(null, {start:12345555,end:12344444,description:"desc",gpsLocation:{latitude:12,longitude:133,city:"botosani",country:"romanica"}});
 		//});
 	}
 
 	this.sendToCalendar = function(event,callback){
 		//request.post('http://127.0.0.1:6969',event,function(err,response,doc){
 		console.log("sendToCalendar: Am primit "+event);
-		callback(null, {start:12345555,end:12344444,startString:"start",endString:"end",description:"desc",gpsLocation:{latitude:12,longitude:133,city:"botosani",country:"romanica"}});
+		callback(null, {start:12345555,end:12344444,description:"desc",gpsLocation:{latitude:12,longitude:133,city:"botosani",country:"romanica"}});
 		//});
 	}
 	//###############################################################################################################
