@@ -19,16 +19,16 @@
 		$altitude_Object = json_decode($altitude_JSON,true);
 		$adress_Object = $google_Object['results'][0]['address_components'];
 		foreach($adress_Object as $component) {
-      		if ($component['types'][0]=='locality') {
-       			$city = $component['long_name'];
+	      		if ($component['types'][0]=='locality') {
+	       			$city = $component['long_name'];
+	      		}
+	      		if ($component['types'][0]=='country') {
+	        		$country = $component['long_name'];
+	      		}
       		}
-      		if ($component['types'][0]=='country') {
-        		$country = $component['long_name'];
-      		}
-      	}
-      	$response_Object = array('latitude'=>$latitude,'longitude'=>$longitude,'altitude'=>$altitude_Object['results'][0]['elevation'],
-      		'address'=>$google_Object['results'][0]['formatted_address'],'city'=>$city,'country'=>$country);
-      	$response_JSON = json_encode($response_Object);
-      	echo $response_JSON;
+	      	$response_Object = array('latitude'=>$latitude,'longitude'=>$longitude,'altitude'=>$altitude_Object['results'][0]['elevation'],
+	      		'address'=>$google_Object['results'][0]['formatted_address'],'city'=>$city,'country'=>$country);
+	      	$response_JSON = json_encode($response_Object);
+	      	echo $response_JSON;
    	}
 ?>
