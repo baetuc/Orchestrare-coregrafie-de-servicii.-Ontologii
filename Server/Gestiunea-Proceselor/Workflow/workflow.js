@@ -441,12 +441,12 @@ var getNewsBasedOnLocationFromCalendar = function(date, callback) {
       getInfoFromNews
     ], returnResult);
 
-    function getInfoFromNews(myEvent, callback){
+    function getInfoFromNews(myEvent, callback) {
+			if(myEvent.hasOwnProperty('err')) return callback(null, myEvent);
       api.getNews(myEvent['gpsLocation']['country'],myEvent['gpsLocation']['city'],callback);
     }
 
     function returnResult(error, newsBasedOnLocationFromCalendar) {
-        if (error) return callback(error);
         callback(null,{news: newsBasedOnLocationFromCalendar});
     }
   }
@@ -457,18 +457,17 @@ var getNewsBasedOnLocationFromCalendar = function(date, callback) {
   */
 
   var getNewsBasedOnCurrentLocation = function(callback) {
-    async.watterfall([
+    async.waterfall([
       api.getLocation,
       getInfoFromNews
     ], returnResult);
 
     function getInfoFromNews(location, callback){
+			if(location.hasOwnProperty('err')) return callback(null, location);
       api.getNews(location['country'],location['city'],callback);
     }
 
     function returnResult(error, newsBasedOnCurrentLocation) {
-        if (error)
-          return callback(error);
         callback(null,{news: newsBasedOnCurrentLocation});
     }
 
@@ -486,11 +485,11 @@ var getNewsBasedOnLocationFromCalendar = function(date, callback) {
     ], returnResult);
 
     function getInfoFromPoi(myEvent, callback){
+			if (myEvent.hasOwnProperty('err')) return callback(null, myEvent);
       api.getPlacesOfInterest(myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude'],callback);
     }
 
     function returnResult(error, poiBasedOnLocationFromCalendar) {
-        if (error) return callback(error);
         callback(null,{poi: poiBasedOnLocationFromCalendar});
     }
   }
@@ -501,18 +500,17 @@ var getNewsBasedOnLocationFromCalendar = function(date, callback) {
   */
 
   var getPoiBasedOnCurrentLocation = function(callback) {
-    async.watterfall([
+    async.waterfall([
       api.getLocation,
       getInfoFromPoi
     ], returnResult);
 
     function getInfoFromPoi(location, callback){
+			if (location.hasOwnProperty('err')) return callback(null, location);
       api.getPlacesOfInterest(location['latitude'],location['longitude'],callback);
     }
 
     function returnResult(error, poiBasedOnCurrentLocation) {
-        if (error)
-          return callback(error);
         callback(null,{poi: poiBasedOnCurrentLocation});
     }
   }
@@ -534,19 +532,18 @@ var getNewsBasedOnLocationFromCalendar = function(date, callback) {
     ], returnResult);
 
     function parallelPoiWeatherNews(myEvent,callback){
+			if (myEvent.hasOwnProperty('err')) return callback(null, {poi:myEvent, weather:myEvent, news:myEvent});
       async.parallel({
         poi: async.apply(api.getPlacesOfInterest,myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude']),
         weather: async.apply(api.getWeather,myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude'],date),
         news: async.apply(api.getNews,myEvent['gpsLocation']['country'],myEvent['gpsLocation']['city'])
       },
       function(error, results){
-        if(error) return callback(error);
         callback(null,results);
       });
     }
 
     function returnResult(error, results) {
-        if (error) return callback(error);
         callback(null,results);
     }
   }
@@ -567,19 +564,18 @@ var getNewsBasedOnLocationFromCalendar = function(date, callback) {
     ], returnResult);
 
     function parallelPoiWeatherNews(location,callback){
+			if (location.hasOwnProperty('err')) return callback(null, {poi:location, weather:location, news:location});
       async.parallel({
         poi: async.apply(api.getPlacesOfInterest,location['latitude'],location['longitude']),
         weather: async.apply(api.getWeather,location['latitude'],location['longitude'], null),
         news: async.apply(api.getNews,location['country'],location['city'])
       },
       function(error, results){
-        if(error) return callback(error);
         callback(null, results);
       });
     }
 
     function returnResult(error, results) {
-        if (error) return callback(error);
         callback(null,results);
     }
   }
@@ -600,19 +596,18 @@ var getNewsBasedOnLocationFromCalendar = function(date, callback) {
     ], returnResult);
 
     function parallelHealthWeatherNews(myEvent,callback){
+			if (myEvent.hasOwnProperty('err')) return callback(null, {health:myEvent, weather:myEvent, news:myEvent});
       async.parallel({
         health: async.apply(api.getInfoAboutHealth,myEvent['gpsLocation']['country'], null),
         weather: async.apply(api.getWeather,myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude'],date),
         news: async.apply(api.getNews,myEvent['gpsLocation']['country'],myEvent['gpsLocation']['city'])
       },
       function(error, results){
-        if(error) return callback(error);
-        callback(null,results);
+				callback(null,results);
       });
     }
 
     function returnResult(error, results) {
-        if (error) return callback(error);
         callback(null,results);
     }
   }
@@ -634,19 +629,18 @@ var getNewsBasedOnLocationFromCalendar = function(date, callback) {
       ], returnResult);
 
       function parallelHealthWeatherNews(location,callback){
+				if (location.hasOwnProperty('err')) return callback(null, {health:location, weather:location, news:location});
         async.parallel({
           health: async.apply(api.getInfoAboutHealth,location['country'],null),
           weather: async.apply(api.getWeather,location['latitude'],location['longitude'],null),
           news: async.apply(api.getNews,location['country'],location['city'])
         },
         function(error, results){
-          if(error) return callback(error);
           callback(null,results);
         });
       }
 
       function returnResult(error, results) {
-          if (error) return callback(error);
           callback(null,results);
       }
     }
@@ -658,7 +652,6 @@ var getNewsBasedOnLocationFromCalendar = function(date, callback) {
 	*/
 	var getEventsFromDay = function (date, callback) {
 		api.getEvents(date, function(err, result) {
-			if(err) return callback(err);
 			callback(null, {events : result});
 		});
 	}
@@ -670,8 +663,13 @@ var getNewsBasedOnLocationFromCalendar = function(date, callback) {
 	*/
 	var getCurrentLocation = function(callback) {
 		api.getLocation(function(err, result) {
-			if(err) return callback(err);
 			callback(null, {location : result});
+		});
+	}
+
+	var getMonthEvents = function(date, callback) {
+		api.getEventsDays(date, function(err, result) {
+			callback(null, {events : result});
 		});
 	}
 
@@ -681,7 +679,6 @@ var getNewsBasedOnLocationFromCalendar = function(date, callback) {
 	*/
 	var getGlobalNews = function(callback) {
 		api.getGlobalNews(function(err, result) {
-			if(err) return callback(err);
 			callback(null, {news : result});
 		});//return json
 	}
@@ -697,7 +694,6 @@ var getNewsBasedOnLocationFromCalendar = function(date, callback) {
 			parallelHealthAndNews
 		], // end of async.waterfall functions array
 		function(err, result) { // the callback function of async.waterfall
-			if(err) return callback(err);
 			callback(null, result);
 		}
 	);
@@ -707,13 +703,13 @@ var getNewsBasedOnLocationFromCalendar = function(date, callback) {
 	and passed as parameter via async.waterfall.
 	*/
 	function parallelHealthAndNews(location, callback) {
+		if (location.hasOwnProperty('err')) return callback(null, {health:location, news:location});
 		async.parallel(
 			{
 				health : async.apply(api.getInfoAboutHealth, location.country, null),
 				news : async.apply(api.getNews, location.country, location.city) // de modificat la Maza, de pus si tara
 			},
 			function(err, result) {
-				if(err) return callback(err);
 				callback(null, result);
 			}
 		); // end of async.parallel
@@ -732,7 +728,6 @@ var getHealthAndNewsBasedOnLocationFromCalendar = function(date, callback) {
 		parallelHealthAndNewsFromEvent
 	], // end of async.waterfall functions array
 	function(err, result) { // the callback function of async.waterfall
-		if(err) return callback(err);
 		callback(null, result);
 	}
 );
@@ -742,13 +737,13 @@ based on the location of the event received from the output of
 api.getEvent method, and passed as parameter via async.waterfall.
 */
 function parallelHealthAndNewsFromEvent(myEvent, callback) {
+	if (myEvent.hasOwnProperty('err')) return callback(null, {health:myEvent, news:myEvent});
 	async.parallel(
 		{
 			health : async.apply(api.getInfoAboutHealth, myEvent.gpsLocation.country, null),
 			news : async.apply(api.getNews, myEvent.gpsLocation.country, myEvent.gpsLocation.city)
 		},
 		function(err, result) {
-			if(err) return callback(err);
 			callback(null, result);
 		}
 	); // end of async.parallel
@@ -766,7 +761,6 @@ var getHealthNewsAndPOIBasedOnCurrentLocation = function(callback) {
 		parallelHealthNewsAndPOI
 	], // end of async.waterfall functions array
 	function(err, result) { // the callback function of async.waterfall
-		if(err) return callback(err);
 		callback(null, result);
 	}
 );
@@ -776,6 +770,7 @@ Places of Interest, based on the location received from the output of
 api.getLocation method, and passed as parameter via async.waterfall.
 */
 function parallelHealthNewsAndPOI(location, callback) {
+	if (location.hasOwnProperty('err')) return callback(null, {health:location, news:location, poi:location});
 	async.parallel(
 		{
 			health : async.apply(api.getInfoAboutHealth, location.country, null),
@@ -783,7 +778,6 @@ function parallelHealthNewsAndPOI(location, callback) {
 			poi : async.apply(api.getPlacesOfInterest, location.latitude, location.longitude)
 		},
 		function(err, result) {
-			if(err) return callback(err);
 			callback(null, result);
 		}
 	); // end of async.parallel
@@ -802,7 +796,6 @@ var getHealthNewsAndPOIBasedOnLocationFromCalendar = function(date, callback) {
 		parallelHealthNewsAndPOIFromEvent
 	], // end of async.waterfall functions array
 	function(err, result) { // the callback function of async.waterfall
-		if(err) return callback(err);
 		callback(null, result);
 	}
 );
@@ -812,6 +805,7 @@ based on the location of the event received from the output of
 api.getEvent method, and passed as parameter via async.waterfall.
 */
 function parallelHealthNewsAndPOIFromEvent(myEvent, callback) {
+	if (myEvent.hasOwnProperty('err')) return callback(null, {health:myEvent, news:myEvent, poi:myEvent});
 	async.parallel(
 		{
 			health : async.apply(api.getInfoAboutHealth, myEvent.gpsLocation.country, null),
@@ -819,7 +813,6 @@ function parallelHealthNewsAndPOIFromEvent(myEvent, callback) {
 			poi : async.apply(api.getPlacesOfInterest, myEvent.gpsLocation.latitude, myEvent.gpsLocation.longitude)
 		},
 		function(err, result) {
-			if(err) return callback(err);
 			callback(null, result);
 		}
 	); // end of async.parallel
@@ -837,7 +830,6 @@ var getHealthWeatherAndPOIBasedOnCurrentLocation = function(callback) {
 		parallelHealthWeatherAndPOI
 	], // end of async.waterfall functions array
 	function(err, result) { // the callback function of async.waterfall
-		if(err) return callback(err);
 		callback(null, result);
 	}
 );
@@ -847,6 +839,7 @@ Places of Interest, based on the location received from the output of
 api.getLocation method, and passed as parameter via async.waterfall.
 */
 function parallelHealthWeatherAndPOI(location, callback) {
+	if (location.hasOwnProperty('err')) return callback(null, {health:location, weather:location, poi:location});
 	async.parallel(
 		{
 			health : async.apply(api.getInfoAboutHealth, location.country, null),
@@ -854,7 +847,6 @@ function parallelHealthWeatherAndPOI(location, callback) {
 			poi : async.apply(api.getPlacesOfInterest, location.latitude, location.longitude)
 		}, // NU AR MERGE DOAR CALLBACK AICI, IN LOC DE CARNAT?
 		function(err, result) {
-			if(err) return callback(err);
 			callback(null, result);
 		}
 	); // end of async.parallel
@@ -873,7 +865,6 @@ var getHealthWeatherAndPOIBasedOnLocationFromCalendar = function(date, callback)
 		parallelHealthWeatherAndPOIFromEvent
 	], // end of async.waterfall functions array
 	function(err, result) { // the callback function of async.waterfall
-		if(err) return callback(err);
 		callback(null, result);
 	}
 );
@@ -883,6 +874,7 @@ Places of Interest, based on the location of the event received from the
 output of api.getEvent method, and passed as parameter via async.waterfall.
 */
 function parallelHealthWeatherAndPOIFromEvent(myEvent, callback) {
+	if (myEvent.hasOwnProperty('err')) return callback(null, {health:myEvent, weather:myEvent, poi:myEvent});
 	async.parallel(
 		{
 			health : async.apply(api.getInfoAboutHealth, myEvent.gpsLocation.country, null),
@@ -890,21 +882,18 @@ function parallelHealthWeatherAndPOIFromEvent(myEvent, callback) {
 			poi : async.apply(api.getPlacesOfInterest, myEvent.gpsLocation.latitude, myEvent.gpsLocation.longitude)
 		},
 		function(err, result) {
-			if(err) return callback(err);
 			callback(null, result);
 		}
 	); // end of async.parallel
 }
 }
 
-
 this.generateWorkflow = function(req, res, next){
 
 	function finalCallback(err, result) {
-		 if(err) return res.send({err : 'We encountered an error. Please try again later!'});
 		 return res.send(result);
-	 }
-
+	}
+	 
 	switch(req.query.action){
 		case "getWeatherFromLocation" : getWeatherFromLocation(finalCallback); break;
 		case "getWeatherFromCalendarLocation" : getWeatherFromCalendarLocation(req.query.date, finalCallback); break;
