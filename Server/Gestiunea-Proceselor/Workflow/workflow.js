@@ -230,8 +230,8 @@ var getNewsAndWeatherFromCalendar = function (date, callback) {
     function parallelAll(location,callback){
 		if (location.hasOwnProperty('err')) return callback(null, {poi:location, weather:location, news:location, health:location});
       async.parallel({
-        poi: async.apply(api.getPlacesOfInterest,location['latitude'],location['longitude']),
-        weather: async.apply(api.getWeather,location['latitude'],location['longitude'], null),
+        	poi: async.apply(api.getPlacesOfInterest,location['latitude'],location['longitude']),
+        	weather: async.apply(api.getWeather,location['latitude'],location['longitude'], null),
 		news: async.apply(api.getNews,location['country'],location['city']),
 		health: async.apply(api.getInfoAboutHealth,location['country'],null)
       },
@@ -255,10 +255,10 @@ var getNewsAndWeatherFromCalendar = function (date, callback) {
     ], returnResult);
 
     function parallelPoiHealth(myEvent,callback){
-		if (myEvent.hasOwnProperty('err')) return callback(null, {poi:myEvent, health:myEvent, news:myEvent, health:myEvent});
+		if (myEvent.hasOwnProperty('err')) return callback(null, {poi:myEvent, health:myEvent, news:myEvent, weather:myEvent});
       async.parallel({
 		poi: async.apply(api.getPlacesOfInterest,myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude']),
-        health: async.apply(api.getInfoAboutHealth,myEvent['gpsLocation']['country'], null),
+                health: async.apply(api.getInfoAboutHealth,myEvent['gpsLocation']['country'], null),
 		news: async.apply(api.getNews,myEvent['gpsLocation']['country'],myEvent['gpsLocation']['city']),
 		weather: async.apply(api.getWeather,myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude'],date)
       },
