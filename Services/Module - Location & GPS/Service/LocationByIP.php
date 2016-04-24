@@ -26,8 +26,7 @@
 	        		$country = $component['long_name'];
 	      		}
       		}
-	      	$response_Object = array('latitude'=>$latitude,'longitude'=>$longitude,'altitude'=>$altitude_Object['results'][0]['elevation'],
-	      		'address'=>$google_Object['results'][0]['formatted_address'],'city'=>$city,'country'=>$country);
+	      	$response_Object = array('latitude'=>$latitude,'longitude'=>$longitude,'altitude'=>$altitude_Object['results'][0]['elevation'],'address'=>$google_Object['results'][0]['formatted_address'],'city'=>$city,'country'=>$country);
 	      	$response_JSON = json_encode($response_Object);
 	      	echo $response_JSON;
    	}
