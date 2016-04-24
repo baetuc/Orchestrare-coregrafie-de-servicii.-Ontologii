@@ -100,8 +100,7 @@ public class CalendarHttpHandler implements HttpHandler {
 			if("getEvents".equalsIgnoreCase(action)){
 				CalendarProvider c=CalendarProvider.getInstance();
 				long time = eventDate.getTime();
-				Timestamp Day = new Timestamp(time);
-				ArrayList<Event> returnData = c.getEvents(Day);
+				ArrayList<Event> returnData = c.getEvents(time);
 				
 				if(returnData==null){
 					responseJSON.put("0events");
@@ -115,8 +114,7 @@ public class CalendarHttpHandler implements HttpHandler {
 			}else if("getEventDays".equalsIgnoreCase(action)){
 				CalendarProvider c=CalendarProvider.getInstance();
 				long time = eventDate.getTime();
-				Timestamp Month = new Timestamp(time);
-				ArrayList<Timestamp> returnData = c.getEventDays(Month);
+				ArrayList<Timestamp> returnData = c.getEventDays(time);
 				
 				if(returnData==null){
 					responseJSON.put("0eventDays");

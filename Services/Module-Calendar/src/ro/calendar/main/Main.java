@@ -2,6 +2,8 @@ package ro.calendar.main;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 
 import com.sun.net.httpserver.HttpServer;
 
@@ -20,18 +22,23 @@ public class Main {
 		server.setExecutor(null); // creates a default executor
 		server.start();
 		
-		String str = "{ \"start\": 1461491398032, \"end\": 1461491398032 }";
+		String str = "{ \"name\": \"Event1\", \"start\": 1461491398032, \"end\": 1461491398032 }";
+		String str2 = "{ \"name\": \"Event2\", \"start\": 1461257074000, \"end\": 1461257074000 }";
+		String str3 = "{ \"name\": \"Event3\", \"start\": 1453394674000, \"end\": 1453394674000 }";
+		
 		Event event = new Event(str);
+		Event event2 = new Event(str2);
+		Event event3 = new Event(str3);
 		
 		CalendarProvider cp = CalendarProvider.getInstance();
 		cp.addEvent(event);
+		cp.addEvent(event2);
+		cp.addEvent(event3);
 		
-		//long startTime = 1461491398032L;
-		Event e = cp.getSpecificEvent(1461491398032L);
-		System.out.println(e.getJson());
-		
-		System.out.println(cp.getEventDays(1461491398032L));
-		System.out.println(cp.getEvents(1461491398032L).size());
+		ArrayList<Timestamp> eventDays = cp.getEventDays(1461491398032L);
+		for (Timestamp t : eventDays) {
+			System.out.println(cp.getSpecificEvent(t.getTime()).getJson());
+		}
 	}
 
 }
