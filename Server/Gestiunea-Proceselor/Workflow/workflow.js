@@ -222,27 +222,26 @@ var getNewsAndWeatherFromCalendar = function (date, callback) {
 2. In paralel, avand locatia, vom cere informatii de la celelalte module
 */
   var getAllFromLocation = function(callback) {
-    async.waterfall([api.getLocation,
-    parallelFinalResult
-    ], finalResult);
-    function parallelFinalResult(location, callback) {
+    async.waterfall([
+      api.getLocation,
+      parallelAll
+    ], returnResult);
+
+    function parallelAll(location,callback){
+		if (location.hasOwnProperty('err')) return callback(null, {poi:location, weather:location, news:location, health:location});
       async.parallel({
-        news : async.apply(api.getNews, location['country'], location['city']),
-        weather : async.apply(api.getWeather, location['latitude'], location['longitude'], null),
-        health : async.apply(api.getInfoAboutHealth, location['country']),
-        poi : async.apply(api.getPointsOfInterest, location['latitude'], location['longitude'])
-      }, function (error, results){
-        if(error) {
-          return callback(error);
-        }
+        poi: async.apply(api.getPlacesOfInterest,location['latitude'],location['longitude']),
+        weather: async.apply(api.getWeather,location['latitude'],location['longitude'], null),
+		news: async.apply(api.getNews,location['country'],location['city']),
+		health: async.apply(api.getInfoAboutHealth,location['country'],null)
+      },
+      function(error, results){
         callback(null, results);
       });
     }
-    function finalResult(error, results) {
-      if(error) {
-        callback(error);
-        callback(null, results);
-      }
+
+    function returnResult(error, results) {
+        callback(null,results);
     }
   }
   /*
