@@ -16,7 +16,7 @@ function GetInfo(){
 	this.getPlacesOfInterest = function (lat, long, callback){
 		//request('http://127.0.0.1?action=PointsOfInterest&lat=' + lat + '&long=' + long, function(err, response, PointsOfInterestArray){
 			console.log("POI: Am primit " + lat + " " + long);
-			callback(null, [{lat:100,long:200,description:"test",name:"cip",url:"www.cipica.ro"}]);
+			callback(null, [{lat:100,long:200,name:"cip",open_now:0,type:"restaurant"}]);//open_now e 0|1
 		//});
 	}
 
