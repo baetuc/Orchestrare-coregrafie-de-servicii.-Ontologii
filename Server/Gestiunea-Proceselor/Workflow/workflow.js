@@ -8,7 +8,7 @@ function ContentHandler(){
 	 	return res.send("Salut!");
 	}
 //------------------------------------------------------------------------------------------------------------------------------------
-/*
+ /*
 1. Cerem locatia modulului locatie
 2. Folosind locatia lui, cerem modulului vreme sa afle vremea locatiei respective
 */
@@ -19,12 +19,11 @@ function ContentHandler(){
     ], returnResult);
 
     function getInfoWeather(location, callback){
+		        if(location.hasOwnProperty('err')) return callback(null, location);
      api.getWeather(location['latitude'],location['longitude'],null,callback);
     }
 
     function returnResult(error, weatherFromLocation) {
-        if (error)
-          return callback(error);
         callback(null,{weather: weatherFromLocation});
     }
 
@@ -40,11 +39,11 @@ function ContentHandler(){
     ], returnResult);
 
     function getInfoWeather(myEvent, callback){
+		         if(myEvent.hasOwnProperty('err')) return callback(null, myEvent);
       api.getWeather(myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude'],null,callback);
     }
 
     function returnResult(error, weatherFromCalendarLocation) {
-        if (error) return callback(error);
         callback(null,{weather: weatherFromCalendarLocation});
     }
   }
@@ -275,7 +274,7 @@ var getNewsAndWeatherFromCalendar = function (date, callback) {
     }
   }
   //---------------------------------------------------------------------------------------------------------------------------------
- /*
+/*
 1. Cerem modulului locatie sa ne dea locatia lor
 2. In paralel, avand locatia, vom cere informatii de la modulele : POI (Places Of Interest) si Sanatate (Health)
 */
@@ -286,18 +285,17 @@ var getPOIAndHealthAdvicesFromLocation = function(callback) {
     ], returnResult);
 
     function parallelPoiHealth(location,callback){
+		if (location.hasOwnProperty('err')) return callback(null, {poi:location, health:location});
       async.parallel({
         poi: async.apply(api.getPlacesOfInterest,location['latitude'],location['longitude']),
         health: async.apply(api.getInfoAboutHealth,location['country'],null)
       },
       function(error, results){
-        if(error) return callback(error);
         callback(null, results);
       });
     }
 
     function returnResult(error, results) {
-        if (error) return callback(error);
         callback(null,results);
     }
   }
@@ -312,18 +310,17 @@ var getPOIAndHealthAdvicesFromLocation = function(callback) {
     ], returnResult);
 
     function parallelPoiNews(location,callback){
+		if (location.hasOwnProperty('err')) return callback(null, {poi:location, news:location});
       async.parallel({
         poi: async.apply(api.getPlacesOfInterest,location['latitude'],location['longitude']),
         news: async.apply(api.getNews,location['country'],location['city'])
       },
       function(error, results){
-        if(error) return callback(error);
         callback(null, results);
       });
     }
 
     function returnResult(error, results) {
-        if (error) return callback(error);
         callback(null,results);
     }
   }
@@ -339,18 +336,17 @@ var getPOIAndHealthAdvicesFromLocation = function(callback) {
     ], returnResult);
 
     function parallelPoiWeather(location,callback){
+		if (location.hasOwnProperty('err')) return callback(null, {poi:location, weather:location});
       async.parallel({
         poi: async.apply(api.getPlacesOfInterest,location['latitude'],location['longitude']),
         weather: async.apply(api.getWeather,location['latitude'],location['longitude'], null),
       },
       function(error, results){
-        if(error) return callback(error);
         callback(null, results);
       });
     }
 
     function returnResult(error, results) {
-        if (error) return callback(error);
         callback(null,results);
     }
   }
@@ -365,18 +361,17 @@ var getPOIAndHealthAdvicesFromLocation = function(callback) {
     ], returnResult);
 
     function parallelPoiHealth(myEvent,callback){
+		if (myEvent.hasOwnProperty('err')) return callback(null, {poi:myEvent, health:myEvent});
       async.parallel({
 		poi: async.apply(api.getPlacesOfInterest,myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude']),
         health: async.apply(api.getInfoAboutHealth,myEvent['gpsLocation']['country'], null)
       },
       function(error, results){
-        if(error) return callback(error);
         callback(null,results);
       });
     }
 
     function returnResult(error, results) {
-        if (error) return callback(error);
         callback(null,results);
     }
   }
@@ -392,18 +387,17 @@ var getPOIAndHealthAdvicesFromLocation = function(callback) {
     ], returnResult);
 
     function parallelPoiNews(myEvent,callback){
+		if (myEvent.hasOwnProperty('err')) return callback(null, {poi:myEvent,news:myEvent});
       async.parallel({
         poi: async.apply(api.getPlacesOfInterest,myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude']),
         news: async.apply(api.getNews,myEvent['gpsLocation']['country'],myEvent['gpsLocation']['city'])
       },
       function(error, results){
-        if(error) return callback(error);
         callback(null,results);
       });
     }
 
     function returnResult(error, results) {
-        if (error) return callback(error);
         callback(null,results);
     }
   }
@@ -419,18 +413,17 @@ var getPOIAndHealthAdvicesFromLocation = function(callback) {
     ], returnResult);
 
     function parallelPoiWeather(myEvent,callback){
+		if (myEvent.hasOwnProperty('err')) return callback(null, {poi:myEvent, weather:myEvent});
       async.parallel({
         poi: async.apply(api.getPlacesOfInterest,myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude']),
         weather: async.apply(api.getWeather,myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude'],date)
       },
       function(error, results){
-        if(error) return callback(error);
         callback(null,results);
       });
     }
 
     function returnResult(error, results) {
-        if (error) return callback(error);
         callback(null,results);
     }
   }
