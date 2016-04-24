@@ -6,6 +6,7 @@ import java.net.InetSocketAddress;
 import com.sun.net.httpserver.HttpServer;
 
 import ro.calendar.json.JSONObject;
+import ro.calendar.provider.CalendarProvider;
 import ro.calendar.provider.Event;
 import ro.calendar.server.CalendarHttpHandler;
 
@@ -19,10 +20,18 @@ public class Main {
 		server.setExecutor(null); // creates a default executor
 		server.start();
 		
-		String str = "{ \"start\": \"January 5, 2016\", \"end\": \"June 10, 2016 \" }";
+		String str = "{ \"start\": 1461491398032, \"end\": 1461491398032 }";
 		Event event = new Event(str);
-		System.out.println(event.getStartTime());
-		System.out.println(event.getEndTime());
+		
+		CalendarProvider cp = CalendarProvider.getInstance();
+		cp.addEvent(event);
+		
+		//long startTime = 1461491398032L;
+		Event e = cp.getSpecificEvent(1461491398032L);
+		System.out.println(e.getJson());
+		
+		System.out.println(cp.getEventDays(1461491398032L));
+		System.out.println(cp.getEvents(1461491398032L).size());
 	}
 
 }
