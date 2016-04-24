@@ -1,20 +1,39 @@
 function GetInfo(){
-	var request = require('request')
-
+	var request = require('request');
+	var weatherURL = 'http://127.0.0.1';
+	var newsURL = 'http://127.0.0.1:5555';
+	var calendarURL = 'http://127.0.0.1:6969';
+	var locationURL = 'http://127.0.0.1:8081';
+	var healthURL = 'http://127.0.0.1'
 	//############################# WEATHER TEAM ####################################################################
 
 	this.getWeather = function(lat,long,date,callback){
 		if(!date){
 			date = new Date();
 		}
-		request('http://127.0.0.1?action=weather&lat=' + lat + '&long=' + long + '&date=' + date.getTime(), function(err,response,vreme){
-			callback(err, vreme);
+		request(weatherURL + '?action=weather&lat=' + lat + '&long=' + long + '&date=' + date.getTime(), function(err,response,vreme){
+			if(err){
+				return callback(null,{'err' : 'Weather unavailable'});
+			} else {
+				if (typeof vreme === 'string' || vreme instanceof String){
+					vreme = JSON.parse(vreme);
+				}
+				return callback(null, vreme);
+			}
 		});
 	}
 	// trimit lat si long; primesc intr-un array punctele de interes din locatia cu coordonatele respective (in array am numele si descrierea fiecaruia intr-un string)
 	this.getPlacesOfInterest = function (lat, long, callback){
-		request('http://127.0.0.1?action=PointsOfInterest&lat=' + lat + '&long=' + long, function(err, response, PointsOfInterestArray){
-			callback(err, PointsOfInterestArray);
+		request(weatherURL + '?action=PointsOfInterest&lat=' + lat + '&long=' + long, function(err, response, PointsOfInterestArray){
+			if(err){
+				return callback(null,{'err' : 'Places of interest unavailable'});
+			}
+			else {
+				if (typeof PointsOfInterestArray === 'string' || PointsOfInterestArray instanceof String){
+					PointsOfInterestArray = JSON.parse(PointsOfInterestArray);
+				}
+				return callback(null, PointsOfInterestArray);
+			}
 		});
 	}
 
@@ -25,22 +44,45 @@ function GetInfo(){
 	//########################## NEWS TEAM ##########################################################################
 
 	this.getNews = function(country, city, callback){
-		request('http://127.0.0.1:5555?action=news&city=' + city +'&country=' + country, function(err, response, stiriArray){
-			callback(err, stiriArray);
+		request(newsURL + '?action=news&city=' + city +'&country=' + country, function(err, response, newsArray){
+			if(err){
+				return callback(null,{'err' : 'News unavailable'});
+			} else {
+				if (typeof newsArray === 'string' || newsArray instanceof String){
+					newsArray = JSON.parse(newsArray);
+				}
+				return callback(null, newsArray);
+			}
 		});
 	}
 
 	/*nu primesc parametru si returnez evenimentele din toata tara*/
 	this.getGlobalNews = function(callback){
-		request('http://127.0.0.1:5555', function(newsArray){
-			callback(err, newsArray);
+		request(newsURL, function(err, response, newsArray){
+			if(err){
+				return callback(null,{'err' : 'Global news unavailable'});
+			}
+			else {
+				if (typeof newsArray === 'string' || newsArray instanceof String){
+					newsArray = JSON.parse(newsArray);
+				}
+				return callback(null, newsArray);
+			}
 		});
 	}
 
 	/*primesc ca parametru un oras si returnez evenimentele din acel oras*/
 	this.getEventsFromTown = function(town, callback){
-		request('http://127.0.0.1:5555?action=getEvents&town=' + town, function(eventsArray){
-			callback(err, eventsArray);
+		request(newsURL + '?action=getEvents&town=' + town, function(err, response, eventsArray){
+			if(err){
+				return callback(null,{'err' : 'Town events unavailable'});
+			}
+			else {
+				if (typeof eventsArray === 'string' || eventsArray instanceof String){
+					eventsArray = JSON.parse(eventsArray);
+				}
+				return callback(null, eventsArray);
+			}
 		});
 	} //Deprecated
 
@@ -53,28 +95,59 @@ function GetInfo(){
 	//Calendar team: 6969
 	// primesc o data; trimit informatii despre evenimentul de la acea data (cand incepe , cand se termina , descriere, locatie)
 	this.getEvents = function (date,callback){
-		request('http://127.0.0.1:6969?action=getEvents&data=' + date.getTime(), function(err, response, infoAboutEvents){
-			callback(err, infoAboutEvents);
+		request(calendarURL + '?action=getEvents&data=' + date.getTime(), function(err, response, infoAboutEvents){
+			if(err){
+				return callback(null,{'err' : 'Events info unavailable'});
+			}
+			else {
+				if (typeof infoAboutEvents === 'string' || infoAboutEvents instanceof String){
+					infoAboutEvents = JSON.parse(infoAboutEvents);
+				}
+				return callback(null, infoAboutEvents);
+			}
 		});
 	}
 
 	// primesc o data calendaristica; trimit un array de date ale evenimentelor din ziua respectiva 
 	this.getEventsDays = function (date,callback){
-		request('http://127.0.0.1:6969?action=getEventsDays&data=' + date.getTime(), function(err, response, eventsDayArray){
-			callback(err, eventsDayArray);
+		request(calendarURL + '?action=getEventsDays&data=' + date.getTime(), function(err, response, eventsDayArray){
+			if(err){
+				return callback(null,{'err' : 'Events days unavailable'});
+			}
+			else {
+				if (typeof eventsDayArray === 'string' || eventsDayArray instanceof String){
+					eventsDayArray = JSON.parse(eventsDayArray);
+				}
+				return callback(null, eventsDayArray);
+			}
 		});
 	}
 
 	this.getSpecificEvent = function(date, callback){
-		request('http:/127.0.0.1:6969?action=getSpecificEvent&data=' + date.getTime(), function(err, response, eventDoc){
-			callback(err,eventDoc);
+		request(calendarURL + '?action=getSpecificEvent&data=' + date.getTime(), function(err, response, eventDoc){
+			if(err){
+				return callback(null,{'err' : 'Specific event unavailable'});
+			}
+			else {
+				if (typeof eventDoc === 'string' || eventDoc instanceof String){
+					eventDoc = JSON.parse(eventDoc);
+				}
+				return callback(null, eventDoc);
+			}
 		});
 	}
 
 	this.sendToCalendar = function(event,callback){
-		request.post('http://127.0.0.1:6969',event,function(err,response,doc){
-			console.info("callback with " + doc)
-			callback(err, doc);
+		request.post(calendarURL,event,function(err,response,doc){
+			if(err){
+				return callback(null,{'err' : 'Send to calendar unavailable'});
+			}
+			else {
+				if (typeof doc === 'string' || doc instanceof String){
+					doc = JSON.parse(doc);
+				}
+				return callback(null, doc);
+			}
 		});
 	}
 	//###############################################################################################################
@@ -87,16 +160,31 @@ function GetInfo(){
 	// http://fenrir.info.uaic.ro/~robert.iacob/projects/ip/
 	this.getLocation = function(callback){
 		console.info("getLocatie called");
-		request('http://127.0.0.1:8081',function(err,response,doc){
-			console.info("callback with " + doc)
-			callback(err, doc);
+		request(locationURL,function(err,response,doc){
+			if(err){
+				return callback(null,{'err' : 'Location unavailable'});
+			}
+			else {
+				if (typeof doc === 'string' || doc instanceof String){
+					doc = JSON.parse(doc);
+				}
+				return callback(null, doc);
+			}
 		});
 	}
 	
 	/*primesc ca parametru o adresa si returnez un json cu diferite informatii */
 	this.getLocationFromAddress = function(address, callback){
-		request('http:127.0.0.1:8081', function(err, response, doc){
-			callback(err, doc);
+		request(locationURL + '&address=' + address, function(err, response, doc){
+			if(err){
+				return callback(null,{'err' : 'Location from address unavailable'});
+			}
+			else {
+				if (typeof doc === 'string' || doc instanceof String){
+					doc = JSON.parse(doc);
+				}
+				return callback(null, doc);
+			}
 		});
 	}
 	//###############################################################################################################
@@ -108,73 +196,22 @@ function GetInfo(){
 	//####################################### HEALTH TEAM ###########################################################
 	// primesc tara si temperatura; trimit intr-un array sfaturi despre sanatate
 	this.getInfoAboutHealth = function(country,temperature,callback){
-		var url = 'http://127.0.0.1?action=sanatate&tara=' + country;
+		var url = healthURL +'?action=sanatate&tara=' + country;
 		if(temperature){
 			url += '&temperatura=' + temperature
 		}
 		request(url, function(err, response, hintsArray){
-			callback(err, hintsArray);
+			if(err){
+				return callback(null,{'err' : 'Health info unavailable'});
+			}
+			else {
+				if (typeof hintsArray === 'string' || hintsArray instanceof String){
+					hintsArray = JSON.parse(hintsArray);
+				}
+				return callback(null, hintsArray);
+			}
 		});
 	}
 	//###############################################################################################################
 }
 module.exports = GetInfo;
-/*
-                                                _______
-                                          .,add88YYYYY88ba,
-                                     .,adPP""'         `"Yba___,aaadYPPba,
-                                 .,adP""                .adP""""'     .,Y8b
-                              ,adP"'                __  d"'     .,ad8P""Y8I
-                           ,adP"'                  d88b I  .,adP""'   ,d8I'
-                         ,adP"                     Y8P" ,adP"'    .,adP"'
-                        adP"                        "' dP"     ,adP""'
-                     ,adP"                             P    ,adP"'
-             .,,aaaad8P"                                 ,adP"
-        ,add88PP""""'                                  ,dP"
-     ,adP""'                                         ,dP"
-   ,8P"'                                            d8"
- ,dP'                                              dP'
- `"Yba                                             Y8
-   `"Yba                                           `8,
-     `"Yba,                                         8I
-        `"8b                                        8I
-          dP                              __       ,8I
-         ,8'                            ,d88b,    ,d8'
-         dP                           ,dP'  `Yb, ,d8'
-        ,8'                         ,dP"      `"Y8P'
-        dP                        ,8P"
-       ,8'                      ,dP"   
-       dP                     ,dP"     
-      ,8'                    ,8P'
-      I8                    dP"
-      IP                   dP'
-      dI                  dP'
-     ,8'                 dP'
-     dI                 dP'
-     8'                ,8'
-     8                ,8I
-     8                dP'
-     8               ,8'
-     8,              IP'
-     Ib             ,dI
-     `8             I8'
-      8,            8I
-      Yb            I8
-      `8,           I8
-       Yb           I8
-       `Y,          I8
-        Ib          I8,
-        `Ib         `8I
-         `8,         Yb
-          I8,        `8,
-          `Yb,        `8a
-           `Yb         `Yb,
-            I8          `Yb,
-            dP            `Yb,
-           ,8'              `Yb,
-           dP                 `Yb,
-          d88baaaad88ba,        `8,
-             `"""'   `Y8ba,     ,dI
-                        `""Y8baadP'
-                             `""'
-*/
