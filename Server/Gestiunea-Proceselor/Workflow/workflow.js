@@ -279,7 +279,7 @@ var getNewsAndWeatherFromCalendar = function (date, callback) {
 1. Cerem modulului locatie sa ne dea locatia lor
 2. In paralel, avand locatia, vom cere informatii de la modulele : POI (Places Of Interest) si Sanatate (Health)
 */
-var getPOIAndHealthFromLocation = function(callback) {
+var getPOIAndHealthAdvicesFromLocation = function(callback) {
     async.waterfall([
       api.getLocation,
       parallelPoiHealth
@@ -327,7 +327,7 @@ var getPOIAndHealthFromLocation = function(callback) {
         callback(null,results);
     }
   }
-  
+
   /*
 1. Cerem modulului locatie sa ne dea locatia lor
 2. In paralel, avand locatia, vom cere informatii de la modulele : POI (Places Of Interest) si Vreme (Weather)
@@ -358,15 +358,15 @@ var getPOIAndHealthFromLocation = function(callback) {
 1. Cerem modulului calendar sa ne dea primul eveniment din ziua curenta
 2. In paralel, avand locatia, vom cere informatii de la modulele : POI (Places Of Interest) si Sanatate (Health)
 */
- var getPOIAndHealthFromCalendarLocation = function(date, callback) {
+ var getPOIAndHealthAdvicesFromCalendarLocation = function(date, callback) {
     async.waterfall([
-      async.apply(api.getEvent,date),
+      async.apply(api.getSpecificEvent,date),
       parallelPoiHealth
     ], returnResult);
 
     function parallelPoiHealth(myEvent,callback){
       async.parallel({
-		poi: async.apply(api.getPlacesOfInterest,location['latitude'],location['longitude']),
+		poi: async.apply(api.getPlacesOfInterest,myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude']),
         health: async.apply(api.getInfoAboutHealth,myEvent['gpsLocation']['country'], null)
       },
       function(error, results){
@@ -384,16 +384,16 @@ var getPOIAndHealthFromLocation = function(callback) {
  /*
 1. Cerem modulului calendar sa ne dea primul eveniment din ziua curenta
 2. In paralel, avand locatia, vom cere informatii de la modulele : POI (Places Of Interest) si Stiri (News)
-*/ 
+*/
   var getPOIAndNewsFromCalendarLocation = function(date, callback) {
     async.waterfall([
-      async.apply(api.getEvent,date),
+      async.apply(api.getSpecificEvent,date),
       parallelPoiNews
     ], returnResult);
 
     function parallelPoiNews(myEvent,callback){
       async.parallel({
-        poi: async.apply(api.getPlacesOfInterest,location['latitude'],location['longitude']),
+        poi: async.apply(api.getPlacesOfInterest,myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude']),
         news: async.apply(api.getNews,myEvent['gpsLocation']['country'],myEvent['gpsLocation']['city'])
       },
       function(error, results){
@@ -411,16 +411,16 @@ var getPOIAndHealthFromLocation = function(callback) {
  /*
 1. Cerem modulului calendar sa ne dea primul eveniment din ziua curenta
 2. In paralel, avand locatia, vom cere informatii de la modulele : POI (Places Of Interest) si Vreme (Weather)
-*/ 
+*/
     var getPOIAndWeatherFromCalendarLocation = function(date, callback) {
     async.waterfall([
-      async.apply(api.getEvent,date),
+      async.apply(api.getSpecificEvent,date),
       parallelPoiWeather
     ], returnResult);
 
     function parallelPoiWeather(myEvent,callback){
       async.parallel({
-        poi: async.apply(api.getPlacesOfInterest,location['latitude'],location['longitude']),
+        poi: async.apply(api.getPlacesOfInterest,myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude']),
         weather: async.apply(api.getWeather,myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude'],date)
       },
       function(error, results){
