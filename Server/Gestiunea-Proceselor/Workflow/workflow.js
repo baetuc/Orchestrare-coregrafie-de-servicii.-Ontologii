@@ -251,10 +251,10 @@ var getNewsAndWeatherFromCalendar = function (date, callback) {
   var getAllFromCalendar = function(date, callback) {
     async.waterfall([
       async.apply(api.getSpecificEvent,date),
-      parallelPoiHealth
+      parallelAll
     ], returnResult);
 
-    function parallelPoiHealth(myEvent,callback){
+    function parallelAll(myEvent,callback){
 		if (myEvent.hasOwnProperty('err')) return callback(null, {poi:myEvent, health:myEvent, news:myEvent, weather:myEvent});
       async.parallel({
 		poi: async.apply(api.getPlacesOfInterest,myEvent['gpsLocation']['latitude'],myEvent['gpsLocation']['longitude']),
