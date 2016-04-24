@@ -59,7 +59,7 @@ function GetInfo(){
 	this.getEvents = function (date,callback){
 		//request('http://127.0.0.1:6969?action=getEvents&data=' + date.getTime(), function(err, response, infoAboutEvents){
 			console.log("Events: Am primit "+date);
-			callback(null, [{start:12345555,end:12344444,startString:"start",endString:"end",description:"desc",gpsLocation:{latitude:12,longitude:133,city:"botosani",country:"romanica"}}]);
+			callback(null, [{start:12345555,end:12344444,description:"desc",gpsLocation:{latitude:12,longitude:133,city:"botosani",country:"romanica"}}]);
 		//});
 	}
 
