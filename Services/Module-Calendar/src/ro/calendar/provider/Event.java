@@ -1,11 +1,5 @@
 package ro.calendar.provider;
 
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import ro.calendar.json.JSONObject;
 
 public class Event {
