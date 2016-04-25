@@ -3,7 +3,7 @@ function GetInfo(){
 	var weatherURL = 'http://127.0.0.1';
 	var newsURL = 'http://127.0.0.1:5555';
 	var calendarURL = 'http://127.0.0.1:6969';
-	var locationURL = 'http://127.0.0.1:8081';
+	var locationURL = 'http://172.17.254.109:80/LocationByIP.php';;
 	var healthURL = 'http://127.0.0.1'
 	//############################# WEATHER TEAM ####################################################################
 
