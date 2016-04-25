@@ -1,6 +1,6 @@
 function GetInfo(){
 	var request = require('request');
-	var weatherURL = 'http://127.0.0.1';
+	var weatherURL = 'http://172.17.254.23/ip/';
 	var newsURL = 'http://127.0.0.1:5555';
 	var calendarURL = 'http://127.0.0.1:6969';
 	var locationURL = 'http://172.17.254.109:80/LocationByIP.php';;
@@ -11,7 +11,7 @@ function GetInfo(){
 		if(!date){
 			date = new Date();
 		}
-		request(weatherURL + '?action=weather&lat=' + lat + '&long=' + long + '&date=' + date.getTime(), function(err,response,vreme){
+		request(weatherURL + 'weather_request.php?action=weather\&lat=' + lat + '\&long=' + long + '\&data=' + date.getTime(), function(err,response,vreme){
 			if(err){
 				return callback(null,{'err' : 'Weather unavailable'});
 			} else {
@@ -24,7 +24,7 @@ function GetInfo(){
 	}
 	// trimit lat si long; primesc intr-un array punctele de interes din locatia cu coordonatele respective (in array am numele si descrierea fiecaruia intr-un string)
 	this.getPlacesOfInterest = function (lat, long, callback){
-		request(weatherURL + '?action=PointsOfInterest&lat=' + lat + '&long=' + long, function(err, response, PointsOfInterestArray){
+		request(weatherURL + 'POI_request.php?action=PointsOfInterest&lat=' + lat + '&long=' + long, function(err, response, PointsOfInterestArray){
 			if(err){
 				return callback(null,{'err' : 'Places of interest unavailable'});
 			}
