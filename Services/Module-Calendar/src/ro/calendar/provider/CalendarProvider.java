@@ -3,7 +3,12 @@ package ro.calendar.provider;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
+
+import ro.calendar.json.JSONArray;
+import ro.calendar.json.JSONObject;
+
+import static java.nio.file.Paths.get;
+import static java.nio.file.Files.readAllBytes;
 
 public class CalendarProvider {
 	public static ArrayList<Event> CalendarEvents =new ArrayList<Event>();
@@ -17,6 +22,34 @@ public class CalendarProvider {
 	      }
 	      return instance;
 	 }
+	 
+	 
+	 /**
+	 * Loads a list of events from a json file.
+	 * The json file must contain a list of event objects.
+	 * The previous list of events will be lost.
+	 * 
+	 * @param jsonFilePath	The path to the file to load events from
+	 */
+	public void loadFromFile(String jsonFilePath) {
+		try {
+			
+			// Read the json file into a string and create an object
+			String eventsString = new String(readAllBytes(get(jsonFilePath)));
+			JSONArray newList = new JSONArray(eventsString);
+			
+			CalendarEvents = new ArrayList<Event>();
+			
+			// Add the events one by one
+			for (Object eventJson : newList) {
+				String eventString = ((JSONObject) eventJson).toString();
+				addEvent(new Event(eventString));
+			}
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	
 	/**
@@ -64,7 +97,7 @@ public class CalendarProvider {
 			}
 		}
 		if(toReturn.isEmpty()){
-			return null;
+			return new ArrayList<Timestamp>();
 		}
 		return toReturn;
 	}
