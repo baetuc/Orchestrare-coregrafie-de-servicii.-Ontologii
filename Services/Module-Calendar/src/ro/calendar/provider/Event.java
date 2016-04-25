@@ -1,11 +1,5 @@
 package ro.calendar.provider;
 
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import ro.calendar.json.JSONObject;
 
 public class Event {
@@ -16,7 +10,7 @@ public class Event {
 	 */
 	String eventJson;
 	
-	Timestamp start, end;
+	long start, end;
 	
 	/**
 	 * Constructor that uses the json received from the user
@@ -27,35 +21,19 @@ public class Event {
 		eventJson = rawJson;
 		
 		JSONObject json = new JSONObject(eventJson);
-		String startString = json.getString("start");
-		String endString = json.getString("end");
-		// o sa modific formatul cand o sa stabilim care e cel final
-		//TODO cand modifici formatul aici, modifica-l si in Handler - sau vedem alta solutie
-		DateFormat format = new SimpleDateFormat("MMMM d, yyyy");
-		Date startDate = null, endDate = null;
-		try {
-			startDate = format.parse(startString);
-			endDate = format.parse(endString);
-		} catch (ParseException e) {
-			System.out.println("Error parsing date");
-			System.out.println(e.getMessage());
-		}
-		long startTime = startDate.getTime();
-		long endTime = endDate.getTime();
-		
-		start = new Timestamp(startTime);
-		end = new Timestamp(endTime);
+		start = json.getLong("start");
+		end = json.getLong("end");
 	}
 	
 	public String getJson() { 
 		return eventJson;
 	}
 	
-	public Timestamp getStartTime() { 
+	public long getStartTime() { 
 		return start;
 	}
 	
-	public Timestamp getEndTime() { 
+	public long getEndTime() { 
 		return end;
 	}
 	

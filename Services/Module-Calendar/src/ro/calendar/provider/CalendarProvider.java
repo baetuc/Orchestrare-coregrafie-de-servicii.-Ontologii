@@ -3,13 +3,15 @@ package ro.calendar.provider;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
+
+import ro.calendar.json.JSONArray;
+import ro.calendar.json.JSONObject;
+
+import static java.nio.file.Paths.get;
+import static java.nio.file.Files.readAllBytes;
 
 public class CalendarProvider {
 	public static ArrayList<Event> CalendarEvents =new ArrayList<Event>();
-	/**
-	 * De sters daca nu vrem sa fie singleton 
-	 */
 	
 	 private static CalendarProvider instance = null;
 	 protected CalendarProvider() {}
@@ -20,6 +22,34 @@ public class CalendarProvider {
 	      }
 	      return instance;
 	 }
+	 
+	 
+	 /**
+	 * Loads a list of events from a json file.
+	 * The json file must contain a list of event objects.
+	 * The previous list of events will be lost.
+	 * 
+	 * @param jsonFilePath	The path to the file to load events from
+	 */
+	public void loadFromFile(String jsonFilePath) {
+		try {
+			
+			// Read the json file into a string and create an object
+			String eventsString = new String(readAllBytes(get(jsonFilePath)));
+			JSONArray newList = new JSONArray(eventsString);
+			
+			CalendarEvents = new ArrayList<Event>();
+			
+			// Add the events one by one
+			for (Object eventJson : newList) {
+				String eventString = ((JSONObject) eventJson).toString();
+				addEvent(new Event(eventString));
+			}
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	
 	/**
@@ -28,13 +58,14 @@ public class CalendarProvider {
 	 * @param 	day	A timestamp inside the day the list of events is requested in
 	 * @return	The list of events taking place in this day
 	 */
-	public ArrayList<Event> getEvents(Timestamp day) { 
+	public ArrayList<Event> getEvents(long eventDay) {
+		Timestamp day = new Timestamp(eventDay);
 		ArrayList<Event>toReturn=new ArrayList<Event>();
 		Calendar cObj1 =Calendar.getInstance();
 		Calendar cObj2 =Calendar.getInstance();
 		cObj1.setTime(day);
 		for(Event e:CalendarEvents){
-			cObj2.setTime(e.getStartTime());
+			cObj2.setTime(new Timestamp(e.getStartTime()));
 			if(cObj1.get(Calendar.DAY_OF_MONTH)==cObj2.get(Calendar.DAY_OF_MONTH)&&
 					cObj1.get(Calendar.MONTH)==cObj2.get(Calendar.MONTH)&&
 					cObj1.get(Calendar.YEAR)==cObj2.get(Calendar.YEAR)){
@@ -52,20 +83,21 @@ public class CalendarProvider {
 	 * @param 	month	A timestamp inside the requested month
 	 * @return	A list of timestamps inside the days when events take place
 	 */
-	public ArrayList<Timestamp> getEventDays(Timestamp month) { 
+	public ArrayList<Timestamp> getEventDays(long eventsMonth) { 
+		Timestamp month = new Timestamp(eventsMonth);
 		ArrayList<Timestamp>toReturn=new ArrayList<Timestamp>();
 		Calendar cObj1 =Calendar.getInstance();
 		Calendar cObj2 =Calendar.getInstance();
 		cObj1.setTime(month);
 		for(Event e:CalendarEvents){
-			cObj2.setTime(e.getStartTime());
+			cObj2.setTime(new Timestamp(e.getStartTime()));
 			if(cObj1.get(Calendar.MONTH)==cObj2.get(Calendar.MONTH)&&
 					cObj1.get(Calendar.YEAR)==cObj2.get(Calendar.YEAR)){
-						toReturn.add(e.getStartTime());
+						toReturn.add(new Timestamp(e.getStartTime()));
 			}
 		}
 		if(toReturn.isEmpty()){
-			return null;
+			return new ArrayList<Timestamp>();
 		}
 		return toReturn;
 	}
@@ -76,19 +108,17 @@ public class CalendarProvider {
 	 * @return	A single event that takes place at exactly the specified time.  
 	 */
 	
-	public Event getSpecificEvent(Timestamp eventTime) { 
+	public Event getSpecificEvent(long eventTime) {
 		Event toReturn;
 		for(Event e:CalendarEvents){
-			if(eventTime.equals(e.getStartTime())){
+			if(eventTime == e.getStartTime()){
+				System.out.println("gasit");
 				toReturn=e;
 				return toReturn;
 			}
 		}
-		
 		return null;
-	}
-	
-	
+	}	
 	
 	
 	/**
@@ -104,6 +134,7 @@ public class CalendarProvider {
 		
 		try{
 			CalendarEvents.add(event);
+			System.out.println("event added");
 			return true;
 		}
 		catch(Exception e){

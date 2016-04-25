@@ -1,12 +1,14 @@
 package ro.calendar.main;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 
 import com.sun.net.httpserver.HttpServer;
 
-import ro.calendar.json.JSONObject;
-import ro.calendar.provider.Event;
+import ro.calendar.provider.CalendarProvider;
 import ro.calendar.server.CalendarHttpHandler;
 
 public class Main {
@@ -19,10 +21,14 @@ public class Main {
 		server.setExecutor(null); // creates a default executor
 		server.start();
 		
-		String str = "{ \"start\": \"January 5, 2016\", \"end\": \"June 10, 2016 \" }";
-		Event event = new Event(str);
-		System.out.println(event.getStartTime());
-		System.out.println(event.getEndTime());
+		CalendarProvider cp = CalendarProvider.getInstance();
+		File desktop = new File(System.getProperty("user.home") + "\\" + "Desktop", "events.json");
+		cp.loadFromFile(desktop.getAbsolutePath());
+		
+		ArrayList<Timestamp> eventDays = cp.getEventDays(1461491398032L);
+		for (Timestamp t : eventDays) {
+			System.out.println(cp.getSpecificEvent(t.getTime()).getJson());
+		}
 	}
 
 }
