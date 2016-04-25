@@ -108,12 +108,12 @@ public class CalendarProvider {
 	 * @return	A single event that takes place at exactly the specified time.  
 	 */
 	
-	public Event getSpecificEvent(long eventTime) {
-		Event toReturn;
+	public String getSpecificEvent(long eventTime) {
+		String toReturn;
 		for(Event e:CalendarEvents){
 			if(eventTime == e.getStartTime()){
 				System.out.println("gasit");
-				toReturn=e;
+				toReturn=e.getJson();
 				return toReturn;
 			}
 		}

@@ -27,7 +27,7 @@ public class Main {
 		
 		ArrayList<Timestamp> eventDays = cp.getEventDays(1461491398032L);
 		for (Timestamp t : eventDays) {
-			System.out.println(cp.getSpecificEvent(t.getTime()).getJson());
+			System.out.println(cp.getSpecificEvent(t.getTime()));
 		}
 	}
 
