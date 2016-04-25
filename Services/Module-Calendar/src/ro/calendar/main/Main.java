@@ -22,18 +22,8 @@ public class Main {
 		server.setExecutor(null); // creates a default executor
 		server.start();
 		
-		String str = "{ \"name\": \"Event1\", \"start\": 1461491398032, \"end\": 1461491398032 }";
-		String str2 = "{ \"name\": \"Event2\", \"start\": 1461257074000, \"end\": 1461257074000 }";
-		String str3 = "{ \"name\": \"Event3\", \"start\": 1453394674000, \"end\": 1453394674000 }";
-		
-		Event event = new Event(str);
-		Event event2 = new Event(str2);
-		Event event3 = new Event(str3);
-		
 		CalendarProvider cp = CalendarProvider.getInstance();
-		cp.addEvent(event);
-		cp.addEvent(event2);
-		cp.addEvent(event3);
+		cp.loadFromFile("C:\\Users\\alexb\\Desktop\\events.json");
 		
 		ArrayList<Timestamp> eventDays = cp.getEventDays(1461491398032L);
 		for (Timestamp t : eventDays) {
