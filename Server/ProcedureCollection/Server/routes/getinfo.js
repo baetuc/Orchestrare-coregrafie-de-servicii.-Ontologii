@@ -11,7 +11,14 @@ function GetInfo(){
 		if(!date){
 			date = new Date();
 		}
-		request(weatherURL + 'weather_request.php?action=weather\&lat=' + lat + '\&long=' + long + '\&data=' + date.getTime(), function(err,response,vreme){
+		propertiesObject = {
+			"action" : "weather",
+			"lat" : lat,
+			"long" : long,
+			"data" : date.getTime()
+		}
+		//request(weatherURL + 'weather_request.php?action=weather\&lat=' + lat + '\&long=' + long + '\&data=' + date.getTime(), function(err,response,vreme){
+		request({url : weatherURL + 'weather_request.php',qs : propertiesObject}, function(err,response,vreme){
 			if(err){
 				return callback(null,{'err' : 'Weather unavailable'});
 			} else {
