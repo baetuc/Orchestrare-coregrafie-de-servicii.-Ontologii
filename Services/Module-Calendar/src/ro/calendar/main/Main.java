@@ -1,5 +1,6 @@
 package ro.calendar.main;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.sql.Timestamp;
@@ -23,7 +24,8 @@ public class Main {
 		server.start();
 		
 		CalendarProvider cp = CalendarProvider.getInstance();
-		cp.loadFromFile("C:\\Users\\alexb\\Desktop\\events.json");
+		File desktop = new File(System.getProperty("user.home") + "\\" + "Desktop", "events.json");
+		cp.loadFromFile(desktop.getAbsolutePath());
 		
 		ArrayList<Timestamp> eventDays = cp.getEventDays(1461491398032L);
 		for (Timestamp t : eventDays) {
