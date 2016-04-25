@@ -11,14 +11,14 @@ function GetInfo(){
 		if(!date){
 			date = new Date();
 		}
-		propertiesObject = {
+		var propertiesObject = {
 			"action" : "weather",
 			"lat" : lat,
 			"long" : long,
-			"data" : date.getTime()
+			"data" : date.getTime() / 1000
 		}
 		//request(weatherURL + 'weather_request.php?action=weather\&lat=' + lat + '\&long=' + long + '\&data=' + date.getTime(), function(err,response,vreme){
-		request({url : weatherURL + 'weather_request.php',qs : propertiesObject}, function(err,response,vreme){
+		request({"url" : weatherURL + 'weather_request.php',"qs" : propertiesObject}, function(err,response,vreme){
 			if(err){
 				return callback(null,{'err' : 'Weather unavailable'});
 			} else {
@@ -31,7 +31,13 @@ function GetInfo(){
 	}
 	// trimit lat si long; primesc intr-un array punctele de interes din locatia cu coordonatele respective (in array am numele si descrierea fiecaruia intr-un string)
 	this.getPlacesOfInterest = function (lat, long, callback){
-		request(weatherURL + 'POI_request.php?action=PointsOfInterest&lat=' + lat + '&long=' + long, function(err, response, PointsOfInterestArray){
+		//request(weatherURL + 'POI_request.php?action=PointsOfInterest&lat=' + lat + '&long=' + long, function(err, response, PointsOfInterestArray){
+		var propertiesObject = {
+			"action" : "PointsOfInterest",
+			"lat" : lat,
+			"long" : long
+		}
+		request({"url" : weatherURL + 'POI_request.php',"qs" : propertiesObject}, function(err, response, PointsOfInterestArray){
 			if(err){
 				return callback(null,{'err' : 'Places of interest unavailable'});
 			}
@@ -51,7 +57,13 @@ function GetInfo(){
 	//########################## NEWS TEAM ##########################################################################
 
 	this.getNews = function(country, city, callback){
-		request(newsURL + '?action=news&city=' + city +'&country=' + country, function(err, response, newsArray){
+		var propertiesObject = {
+			"action" : "news",
+			"city" : city,
+			"country" : country
+		}
+		//request(newsURL + '?action=news&city=' + city +'&country=' + country, function(err, response, newsArray){
+		request({"url" : newsURL, "qs" : propertiesObject}, function(err, response, newsArray){
 			if(err){
 				return callback(null,{'err' : 'News unavailable'});
 			} else {
@@ -64,6 +76,7 @@ function GetInfo(){
 	}
 
 	/*nu primesc parametru si returnez evenimentele din toata tara*/
+	var 
 	this.getGlobalNews = function(callback){
 		request(newsURL, function(err, response, newsArray){
 			if(err){
@@ -80,7 +93,11 @@ function GetInfo(){
 
 	/*primesc ca parametru un oras si returnez evenimentele din acel oras*/
 	this.getEventsFromTown = function(town, callback){
-		request(newsURL + '?action=getEvents&town=' + town, function(err, response, eventsArray){
+		var propertiesObject = {
+			"action" : "getEvents",
+			"town" : town
+		}
+		request({"url" : newsURL, "qs" : propertiesObject}, function(err, response, eventsArray){
 			if(err){
 				return callback(null,{'err' : 'Town events unavailable'});
 			}
@@ -102,7 +119,11 @@ function GetInfo(){
 	//Calendar team: 6969
 	// primesc o data; trimit informatii despre evenimentul de la acea data (cand incepe , cand se termina , descriere, locatie)
 	this.getEvents = function (date,callback){
-		request(calendarURL + '?action=getEvents&data=' + date.getTime(), function(err, response, infoAboutEvents){
+		var propertiesObject = {
+			"action" : "getEvents",
+			"data" : date.getTime()
+		}
+		request({"url" : calendarURL, "qs" : propertiesObject}, function(err, response, infoAboutEvents){
 			if(err){
 				return callback(null,{'err' : 'Events info unavailable'});
 			}
@@ -117,7 +138,11 @@ function GetInfo(){
 
 	// primesc o data calendaristica; trimit un array de date ale evenimentelor din ziua respectiva 
 	this.getEventsDays = function (date,callback){
-		request(calendarURL + '?action=getEventsDays&data=' + date.getTime(), function(err, response, eventsDayArray){
+		var propertiesObject = {
+			"action" : "getEventsDays",
+			"data" : date.getTime()
+		}
+		request({"url" : calendarURL, "qs" : propertiesObject}, function(err, response, eventsDayArray){
 			if(err){
 				return callback(null,{'err' : 'Events days unavailable'});
 			}
@@ -131,7 +156,11 @@ function GetInfo(){
 	}
 
 	this.getSpecificEvent = function(date, callback){
-		request(calendarURL + '?action=getSpecificEvent&data=' + date.getTime(), function(err, response, eventDoc){
+		var propertiesObject = {
+			"action" : "getSpecificEvent",
+			"data" : date.getTime()
+		}
+		request({"url" : calendarURL, "qs" : propertiesObject}, function(err, response, eventDoc){
 			if(err){
 				return callback(null,{'err' : 'Specific event unavailable'});
 			}
@@ -182,7 +211,10 @@ function GetInfo(){
 	
 	/*primesc ca parametru o adresa si returnez un json cu diferite informatii */
 	this.getLocationFromAddress = function(address, callback){
-		request(locationURL + '&address=' + address, function(err, response, doc){
+		var propertiesObject = {
+			"address" : address,
+		}
+		request({"url" :locationURL, "qs" : propertiesObject}, function(err, response, doc){
 			if(err){
 				return callback(null,{'err' : 'Location from address unavailable'});
 			}
@@ -203,11 +235,15 @@ function GetInfo(){
 	//####################################### HEALTH TEAM ###########################################################
 	// primesc tara si temperatura; trimit intr-un array sfaturi despre sanatate
 	this.getInfoAboutHealth = function(country,temperature,callback){
-		var url = healthURL +'?action=sanatate&tara=' + country;
-		if(temperature){
-			url += '&temperatura=' + temperature
+		var url = healthURL;
+		var propertiesObject = {
+			"action" : "sanatate",
+			"tara" : country
 		}
-		request(url, function(err, response, hintsArray){
+		if(temperature){
+			propertiesObject['temperatura'] : temperature
+		}
+		request({"url" : healthURL, "qs" : propertiesObject}, function(err, response, hintsArray){
 			if(err){
 				return callback(null,{'err' : 'Health info unavailable'});
 			}
