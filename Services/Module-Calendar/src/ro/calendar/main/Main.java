@@ -8,9 +8,7 @@ import java.util.ArrayList;
 
 import com.sun.net.httpserver.HttpServer;
 
-import ro.calendar.json.JSONObject;
 import ro.calendar.provider.CalendarProvider;
-import ro.calendar.provider.Event;
 import ro.calendar.server.CalendarHttpHandler;
 
 public class Main {

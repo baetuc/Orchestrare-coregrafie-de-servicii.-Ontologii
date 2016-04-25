@@ -3,7 +3,6 @@ package ro.calendar.provider;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import ro.calendar.json.JSONArray;
 import ro.calendar.json.JSONObject;
