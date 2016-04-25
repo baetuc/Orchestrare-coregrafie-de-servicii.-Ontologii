@@ -10,7 +10,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Map;
 import java.net.URLDecoder;
 
 import com.sun.net.httpserver.HttpExchange;
@@ -137,7 +136,6 @@ public class CalendarHttpHandler implements HttpHandler {
 		}
 		
 		if ("post".equalsIgnoreCase(h.getRequestMethod())){
-	            Map<String, Object> parameters = (Map<String, Object>)h.getAttribute("parameters");
 	            InputStreamReader isr = new InputStreamReader(h.getRequestBody(),"utf-8");
 	            BufferedReader br = new BufferedReader(isr);
 	            String query = br.readLine();
