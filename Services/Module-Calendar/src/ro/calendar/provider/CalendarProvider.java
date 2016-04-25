@@ -98,7 +98,7 @@ public class CalendarProvider {
 			}
 		}
 		if(toReturn.isEmpty()){
-			return null;
+			return new ArrayList<Timestamp>();
 		}
 		return toReturn;
 	}
