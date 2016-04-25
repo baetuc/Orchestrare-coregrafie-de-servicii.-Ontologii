@@ -5,14 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Map;
-import java.net.URLDecoder;
-
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -79,31 +72,20 @@ public class CalendarHttpHandler implements HttpHandler {
 					os.close();	
 			}
 
-			//Validating arguments' values
-			//TODO De modificat formatul
-			DateFormat format = new SimpleDateFormat("MMMM d, yyyy");
-			Date eventDate = null;
-			try {
-				eventDate = format.parse(data);
-			} catch (ParseException e) {
-				System.out.println("Error parsing date argument");
-				System.out.println(e.getMessage());
-				responseJSON.put("Parse error");
-				response = responseJSON.toString();
-				h.sendResponseHeaders(200, response.length());
-				OutputStream os = h.getResponseBody();
-				os.write(response.getBytes());
-				os.close();	
-			}
+
+			//Convert the timestamp received from long to java.timestamp
+			Timestamp timp=new Timestamp(0);
+			timp.setTime(Long.parseLong(data));
+			
 			
 			//getEvents received
 			if("getEvents".equalsIgnoreCase(action)){
 				CalendarProvider c=CalendarProvider.getInstance();
-				long time = eventDate.getTime();
+				long time = timp.getTime();
 				ArrayList<Event> returnData = c.getEvents(time);
 				
 				if(returnData==null){
-					responseJSON.put("0events");
+					responseJSON.put("0");
 				}else{
 					for(Event e :returnData){
 						JSONObject obj = new JSONObject(e.getJson());
@@ -113,20 +95,29 @@ public class CalendarHttpHandler implements HttpHandler {
 			//getEventDays received
 			}else if("getEventDays".equalsIgnoreCase(action)){
 				CalendarProvider c=CalendarProvider.getInstance();
-				long time = eventDate.getTime();
+				long time = timp.getTime();
 				ArrayList<Timestamp> returnData = c.getEventDays(time);
 				
 				if(returnData==null){
-					responseJSON.put("0eventDays");
+					responseJSON.put("0");
 				}else{
 					for(Timestamp e :returnData){
-						responseJSON.put(URLDecoder.decode(e.toString(),"Utf-8"));
+						//responseJSON.put(URLDecoder.decode(e.toString(),"Utf-8"));
+						responseJSON.put(e.getTime());
 					}
 				}
 			}
+			//getSpecificEvent received
+			else if("getSpecificEvent".equalsIgnoreCase(action)){
+				CalendarProvider c=CalendarProvider.getInstance();
+				long time = timp.getTime();
+				Event e = c.getSpecificEvent(time);
+				responseJSON.put(e.getJson());
+				
+			}
 			//Error parsing arguments
 			else{
-				responseJSON.put("Parse error");
+				responseJSON.put("0");
 			}
 			
 			response = responseJSON.toString();
@@ -136,8 +127,8 @@ public class CalendarHttpHandler implements HttpHandler {
 			os.close();	
 		}
 		
+		//nu mai este folosita
 		if ("post".equalsIgnoreCase(h.getRequestMethod())){
-	            Map<String, Object> parameters = (Map<String, Object>)h.getAttribute("parameters");
 	            InputStreamReader isr = new InputStreamReader(h.getRequestBody(),"utf-8");
 	            BufferedReader br = new BufferedReader(isr);
 	            String query = br.readLine();
