@@ -1,5 +1,5 @@
 <?php
-	//$lat=$_get['lat'];
+
 	//$lat=45.471929;
 	//$long=9.187633;
 	$lat=$_get['lat'];
@@ -18,6 +18,7 @@
     	$name=$POI['name'];
     	$lat_tosend=$POI['geometry']['location']['lat'];
     	$long_tosend=$POI['geometry']['location']['lng'];
+    	$type_tosend=$POI['types'][0];
     	
  		
   
@@ -30,14 +31,14 @@
 		 	$open_tosend='0';
 		 }
 
-		$responseobj=array('name'=>$name,'lat'=>$lat_tosend,'long'=>$long_tosend,'open_now'=>$open_tosend);
+		$responseobj=array('name'=>$name,'lat'=>$lat_tosend,'long'=>$long_tosend,'open_now'=>$open_tosend,'type'=>$type_tosend);
 		array_push($fullarray,$responseobj);
 		
 		
 
     }
     $jsonresponse=json_encode($fullarray);
-	echo $jsonresponse.'<br/>';
+	echo $jsonresponse;
    
 
     
