@@ -1,0 +1,25 @@
+{
+  "news":{
+	 "title": "simple news",
+	 "intro":"intro",
+	 "url":"url",
+	 "date":1461423000
+  },
+  "POI":[
+  {
+	"latitude":"47.15871",
+	"longitude":"27.60152"
+  },
+  {
+	"latitude":"47.15958",
+	"longitude":"27.59832"
+  }
+  ],
+  "weather":
+  {
+    "temperature": "32",
+    "urlImage": "random.org",
+    "humidity": "100",
+    "wind": "1302"
+  }
+}
