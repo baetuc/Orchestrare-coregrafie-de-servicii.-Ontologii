@@ -2,11 +2,11 @@ function GetInfo(){
 	var request = require('request');
 
 	var config = require('./config.js')
-	var weatherURL = config['weatherURL'] || 'http://127.0.0.1/ip/';
-	var newsURL = config['newsURL'] || 'http://127.0.0.1:5555';
-	var calendarURL = config['calendarURL'] || 'http://127.0.0.1:6969';
-	var locationURL = config['locationURL'] || 'http://127.0.0.1:80/index.php';
-	var healthURL = config['healthURL'] || 'http://127.0.0.1'
+	var weatherURL = (config['weatherURL'] || 'http://127.0.0.1') + '/ip/';
+	var newsURL = (config['newsURL'] || 'http://127.0.0.1') + ':5555';
+	var calendarURL = (config['calendarURL'] || 'http://127.0.0.1') + ':6969';
+	var locationURL = (config['locationURL'] || 'http://127.0.0.1') + ':80/index.php';
+	var healthURL = (config['healthURL'] || 'http://127.0.0.1')
 	//############################# WEATHER TEAM ####################################################################
 
 	this.getWeather = function(lat,long,date,callback){
