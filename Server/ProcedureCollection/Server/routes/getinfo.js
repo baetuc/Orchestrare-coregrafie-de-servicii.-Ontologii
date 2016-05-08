@@ -1,10 +1,12 @@
 function GetInfo(){
 	var request = require('request');
-	var weatherURL = 'http://172.17.254.23/ip/';
-	var newsURL = 'http://127.0.0.1:5555';
-	var calendarURL = 'http://127.0.0.1:6969';
-	var locationURL = 'http://172.17.254.109:80/LocationByIP.php';;
-	var healthURL = 'http://127.0.0.1'
+
+	var config = require('./config.js')
+	var weatherURL = config['weatherURL'] || 'http://127.0.0.1/ip/';
+	var newsURL = config['newsURL'] || 'http://127.0.0.1:5555';
+	var calendarURL = config['calendarURL'] || 'http://127.0.0.1:6969';
+	var locationURL = config['locationURL'] || 'http://127.0.0.1:80/index.php';
+	var healthURL = config['healthURL'] || 'http://127.0.0.1'
 	//############################# WEATHER TEAM ####################################################################
 
 	this.getWeather = function(lat,long,date,callback){
@@ -76,7 +78,6 @@ function GetInfo(){
 	}
 
 	/*nu primesc parametru si returnez evenimentele din toata tara*/
-	var 
 	this.getGlobalNews = function(callback){
 		request(newsURL, function(err, response, newsArray){
 			if(err){
@@ -139,7 +140,7 @@ function GetInfo(){
 	// primesc o data calendaristica; trimit un array de date ale evenimentelor din ziua respectiva 
 	this.getEventsDays = function (date,callback){
 		var propertiesObject = {
-			"action" : "getEventsDays",
+			"action" : "getEventDays",
 			"data" : date.getTime()
 		}
 		request({"url" : calendarURL, "qs" : propertiesObject}, function(err, response, eventsDayArray){
@@ -241,7 +242,7 @@ function GetInfo(){
 			"tara" : country
 		}
 		if(temperature){
-			propertiesObject['temperatura'] : temperature
+			propertiesObject['temperatura'] = temperature
 		}
 		request({"url" : healthURL, "qs" : propertiesObject}, function(err, response, hintsArray){
 			if(err){
