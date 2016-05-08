@@ -74,6 +74,9 @@ function GetInfo(){
 				return callback(null,{'err' : 'News unavailable'});
 			} else {
 				if (typeof newsArray === 'string' || newsArray instanceof String){
+					while(newsArray[0] != '['){
+						newsArray = newsArray.slice(1);
+					}
 					newsArray = JSON.parse(newsArray);
 				}
 				return callback(null, newsArray);
@@ -89,6 +92,9 @@ function GetInfo(){
 			}
 			else {
 				if (typeof newsArray === 'string' || newsArray instanceof String){
+					while(newsArray[0] != '['){
+						newsArray = newsArray.slice(1);
+					}
 					newsArray = JSON.parse(newsArray);
 				}
 				return callback(null, newsArray);
@@ -108,6 +114,9 @@ function GetInfo(){
 			}
 			else {
 				if (typeof eventsArray === 'string' || eventsArray instanceof String){
+					while(newsArray[0] != '['){
+						newsArray = newsArray.slice(1);
+					}
 					eventsArray = JSON.parse(eventsArray);
 				}
 				return callback(null, eventsArray);
