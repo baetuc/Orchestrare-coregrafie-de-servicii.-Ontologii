@@ -77,7 +77,7 @@ function GetInfo(){
 					while(newsArray[0] != '['){
 						newsArray = newsArray.slice(1);
 					}
-					newsArray = JSON.parse(newsArray);
+					newsArray = eval( '(' + newsArray + ')' );
 				}
 				return callback(null, newsArray);
 			}
@@ -95,7 +95,7 @@ function GetInfo(){
 					while(newsArray[0] != '['){
 						newsArray = newsArray.slice(1);
 					}
-					newsArray = JSON.parse(newsArray);
+					newsArray = eval( '(' + newsArray + ')' );
 				}
 				return callback(null, newsArray);
 			}
@@ -117,7 +117,7 @@ function GetInfo(){
 					while(newsArray[0] != '['){
 						newsArray = newsArray.slice(1);
 					}
-					eventsArray = JSON.parse(eventsArray);
+					newsArray = eval( '(' + newsArray + ')' );
 				}
 				return callback(null, eventsArray);
 			}
