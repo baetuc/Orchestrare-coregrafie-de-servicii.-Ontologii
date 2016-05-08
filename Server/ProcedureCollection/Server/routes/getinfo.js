@@ -16,8 +16,12 @@ function GetInfo(){
 		var propertiesObject = {
 			"action" : "weather",
 			"lat" : lat,
-			"long" : long,
-			"data" : date.getTime() / 1000
+			"long" : long
+		}
+		if(typeof date === 'Date' || date instanceof Date){
+			propertiesObject["data"] = date.getTime() / 1000;
+		} else{
+			propertiesObject["data"] = date / 1000;
 		}
 		//request(weatherURL + 'weather_request.php?action=weather\&lat=' + lat + '\&long=' + long + '\&data=' + date.getTime(), function(err,response,vreme){
 		request({"url" : weatherURL + 'weather_request.php',"qs" : propertiesObject}, function(err,response,vreme){
@@ -140,8 +144,12 @@ function GetInfo(){
 	// primesc o data calendaristica; trimit un array de date ale evenimentelor din ziua respectiva 
 	this.getEventsDays = function (date,callback){
 		var propertiesObject = {
-			"action" : "getEventDays",
-			"data" : date.getTime()
+			"action" : "getEventDays"
+		}
+		if(typeof date === 'Date' || date instanceof Date){
+			propertiesObject["data"] = date.getTime();
+		} else{
+			propertiesObject["data"] = date;
 		}
 		request({"url" : calendarURL, "qs" : propertiesObject}, function(err, response, eventsDayArray){
 			if(err){
@@ -158,8 +166,12 @@ function GetInfo(){
 
 	this.getSpecificEvent = function(date, callback){
 		var propertiesObject = {
-			"action" : "getSpecificEvent",
-			"data" : date.getTime()
+			"action" : "getSpecificEvent"
+		}
+		if(typeof date === 'Date' || date instanceof Date){
+			propertiesObject["data"] = date.getTime();
+		} else{
+			propertiesObject["data"] = date;
 		}
 		request({"url" : calendarURL, "qs" : propertiesObject}, function(err, response, eventDoc){
 			if(err){
