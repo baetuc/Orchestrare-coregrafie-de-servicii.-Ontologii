@@ -6,7 +6,7 @@ function GetInfo(){
 	var newsURL = (config['newsURL'] || 'http://127.0.0.1') + ':5555';
 	var calendarURL = (config['calendarURL'] || 'http://127.0.0.1') + ':6969';
 	var locationURL = (config['locationURL'] || 'http://127.0.0.1') + ':80/index.php';
-	var healthURL = (config['healthURL'] || 'http://127.0.0.1')
+	var healthURL = (config['healthURL'] || 'http://127.0.0.1') + ':9987'
 	//############################# WEATHER TEAM ####################################################################
 
 	this.getWeather = function(lat,long,date,callback){
@@ -237,24 +237,54 @@ function GetInfo(){
 	// primesc tara si temperatura; trimit intr-un array sfaturi despre sanatate
 	this.getInfoAboutHealth = function(country,temperature,callback){
 		var url = healthURL;
-		var propertiesObject = {
-			"action" : "sanatate",
-			"tara" : country
-		}
-		if(temperature){
-			propertiesObject['temperatura'] = temperature
-		}
-		request({"url" : healthURL, "qs" : propertiesObject}, function(err, response, hintsArray){
-			if(err){
-				return callback(null,{'err' : 'Health info unavailable'});
+		
+		if(temperature && country){
+			//2 requesturi
+			var propertiesObject = {
+				"action" : "sanatate"
 			}
-			else {
-				if (typeof hintsArray === 'string' || hintsArray instanceof String){
-					hintsArray = JSON.parse(hintsArray);
+			propertiesObject["temperatura"] = temperature;
+			request({'url' : healthURL, 'qs' : propertiesObject}, function(err1, response1, hintsArray1){
+				propertiesObject = {
+					"action" : "sanatate"
 				}
-				return callback(null, hintsArray);
+				propertiesObject["tara"] = country;
+				request({'url' : healthURL, 'qs' : propertiesObject}, function(err2, response2, hintsArray2){
+					if(err1 || err2){
+						return callback(null,{'err' : 'Health info unavailable'});
+					} else{
+						if (typeof hintsArray1 === 'string' || hintsArray1 instanceof String){
+							hintsArray1 = JSON.parse(hintsArray1);
+						}
+						if (typeof hintsArray2 === 'string' || hintsArray2 instanceof String){
+							hintsArray2 = JSON.parse(hintsArray2);
+						}
+						var hintsArray = hintsArray1.concat(hintsArray2);
+						return callback(null, hintsArray);
+					}
+				})
+			}) 
+		} else {
+			var propertiesObject = {
+				"action" : "sanatate"
 			}
-		});
+			if(temperature){
+				propertiesObject['temperatura'] = temperature;
+			} else if (country){
+				propertiesObject["tara"] = country;
+			}
+			request({"url" : healthURL, "qs" : propertiesObject}, function(err, response, hintsArray){
+				if(err){
+					return callback(null,{'err' : 'Health info unavailable'});
+				}
+				else {
+					if (typeof hintsArray === 'string' || hintsArray instanceof String){
+						hintsArray = JSON.parse(hintsArray);
+					}
+					return callback(null, hintsArray);
+				}
+			});
+		}
 	}
 	//###############################################################################################################
 }
