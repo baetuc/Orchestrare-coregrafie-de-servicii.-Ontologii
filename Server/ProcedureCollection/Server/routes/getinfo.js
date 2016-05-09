@@ -154,8 +154,12 @@ function GetInfo(){
 	// primesc o data; trimit informatii despre evenimentul de la acea data (cand incepe , cand se termina , descriere, locatie)
 	this.getEvents = function (date,callback){
 		var propertiesObject = {
-			"action" : "getEvents",
-			"data" : date.getTime()
+			"action" : "getEvents"
+		}
+		if(typeof date === 'Date' || date instanceof Date){
+			propertiesObject["data"] = date.getTime() / 1000;
+		} else{
+			propertiesObject["data"] = date / 1000;
 		}
 		request({"url" : calendarURL, "qs" : propertiesObject}, function(err, response, infoAboutEvents){
 			if(err){
