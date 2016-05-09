@@ -6,9 +6,13 @@ function GetInfo(){
 	var newsURL = (config['newsURL'] || 'http://127.0.0.1') + ':5555';
 	var calendarURL = (config['calendarURL'] || 'http://127.0.0.1') + ':6969';
 	var locationURL = (config['locationURL'] || 'http://127.0.0.1') + ':80/index.php';
-	var healthURL = (config['healthURL'] || 'http://127.0.0.1') + ':9987'
+	var healthURL = (config['healthURL'] || 'http://127.0.0.1') + ':8897'
 	//############################# WEATHER TEAM ####################################################################
-
+	
+	var logString = function(data){
+		var now = new Date();
+		fs.appendFile('log.txt', now + ' ' + data);
+	}
 	this.getWeather = function(lat,long,date,callback){
 		if(!date){
 			date = new Date();
@@ -26,11 +30,13 @@ function GetInfo(){
 		//request(weatherURL + 'weather_request.php?action=weather\&lat=' + lat + '\&long=' + long + '\&data=' + date.getTime(), function(err,response,vreme){
 		request({"url" : weatherURL + 'weather_request.php',"qs" : propertiesObject}, function(err,response,vreme){
 			if(err){
+				logString('getWeather fail')
 				return callback(null,{'err' : 'Weather unavailable'});
 			} else {
 				if (typeof vreme === 'string' || vreme instanceof String){
 					vreme = JSON.parse(vreme);
 				}
+				logString('getWeather success');
 				return callback(null, vreme);
 			}
 		});
@@ -45,12 +51,14 @@ function GetInfo(){
 		}
 		request({"url" : weatherURL + 'POI_request.php',"qs" : propertiesObject}, function(err, response, PointsOfInterestArray){
 			if(err){
+				logString('getPOI fail');
 				return callback(null,{'err' : 'Places of interest unavailable'});
 			}
 			else {
 				if (typeof PointsOfInterestArray === 'string' || PointsOfInterestArray instanceof String){
 					PointsOfInterestArray = JSON.parse(PointsOfInterestArray);
 				}
+				logString('getPOI success');
 				return callback(null, PointsOfInterestArray);
 			}
 		});
@@ -71,14 +79,17 @@ function GetInfo(){
 		//request(newsURL + '?action=news&city=' + city +'&country=' + country, function(err, response, newsArray){
 		request({"url" : newsURL, "qs" : propertiesObject}, function(err, response, newsArray){
 			if(err){
+				logString('getNews fail');
 				return callback(null,{'err' : 'News unavailable'});
 			} else {
 				if (typeof newsArray === 'string' || newsArray instanceof String){
 					while(newsArray[0] != '['){
 						newsArray = newsArray.slice(1);
 					}
+					newsArray = newsArray.replace("'","");
 					newsArray = eval( '(' + newsArray + ')' );
 				}
+				logString('getNews fail');
 				return callback(null, newsArray);
 			}
 		});
@@ -88,6 +99,7 @@ function GetInfo(){
 	this.getGlobalNews = function(callback){
 		request(newsURL, function(err, response, newsArray){
 			if(err){
+				logString('getGlobalNews fail');
 				return callback(null,{'err' : 'Global news unavailable'});
 			}
 			else {
@@ -95,8 +107,10 @@ function GetInfo(){
 					while(newsArray[0] != '['){
 						newsArray = newsArray.slice(1);
 					}
+					newsArray = newsArray.replace("'","");
 					newsArray = eval( '(' + newsArray + ')' );
 				}
+				logString('getGlobalNews success');
 				return callback(null, newsArray);
 			}
 		});
@@ -110,6 +124,7 @@ function GetInfo(){
 		}
 		request({"url" : newsURL, "qs" : propertiesObject}, function(err, response, eventsArray){
 			if(err){
+				logString('getEventsFromTwon fail');
 				return callback(null,{'err' : 'Town events unavailable'});
 			}
 			else {
@@ -117,8 +132,10 @@ function GetInfo(){
 					while(newsArray[0] != '['){
 						newsArray = newsArray.slice(1);
 					}
+					newsArray = newsArray.replace("'","");
 					newsArray = eval( '(' + newsArray + ')' );
 				}
+				logString('getEventsFromTwon success');
 				return callback(null, eventsArray);
 			}
 		});
@@ -139,12 +156,14 @@ function GetInfo(){
 		}
 		request({"url" : calendarURL, "qs" : propertiesObject}, function(err, response, infoAboutEvents){
 			if(err){
+				logString('getEvents fail');
 				return callback(null,{'err' : 'Events info unavailable'});
 			}
 			else {
 				if (typeof infoAboutEvents === 'string' || infoAboutEvents instanceof String){
 					infoAboutEvents = JSON.parse(infoAboutEvents);
 				}
+				logString('getEvents success');
 				return callback(null, infoAboutEvents);
 			}
 		});
@@ -162,12 +181,14 @@ function GetInfo(){
 		}
 		request({"url" : calendarURL, "qs" : propertiesObject}, function(err, response, eventsDayArray){
 			if(err){
+				logString('getEventsDays fail');
 				return callback(null,{'err' : 'Events days unavailable'});
 			}
 			else {
 				if (typeof eventsDayArray === 'string' || eventsDayArray instanceof String){
 					eventsDayArray = JSON.parse(eventsDayArray);
 				}
+				logString('getEventsDays success');
 				return callback(null, eventsDayArray);
 			}
 		});
@@ -184,12 +205,14 @@ function GetInfo(){
 		}
 		request({"url" : calendarURL, "qs" : propertiesObject}, function(err, response, eventDoc){
 			if(err){
+				logString('getSpecificEvent fail');
 				return callback(null,{'err' : 'Specific event unavailable'});
 			}
 			else {
 				if (typeof eventDoc === 'string' || eventDoc instanceof String){
 					eventDoc = JSON.parse(eventDoc);
 				}
+				logString('getSpecificEvent success');
 				return callback(null, eventDoc);
 			}
 		});
@@ -198,12 +221,14 @@ function GetInfo(){
 	this.sendToCalendar = function(event,callback){
 		request.post(calendarURL,event,function(err,response,doc){
 			if(err){
+				logString('sendToCalendar fail');
 				return callback(null,{'err' : 'Send to calendar unavailable'});
 			}
 			else {
 				if (typeof doc === 'string' || doc instanceof String){
 					doc = JSON.parse(doc);
 				}
+				logString('sendToCalendar success');
 				return callback(null, doc);
 			}
 		});
@@ -220,12 +245,14 @@ function GetInfo(){
 		console.info("getLocatie called");
 		request(locationURL,function(err,response,doc){
 			if(err){
+				logString('getLocation fail');
 				return callback(null,{'err' : 'Location unavailable'});
 			}
 			else {
 				if (typeof doc === 'string' || doc instanceof String){
 					doc = JSON.parse(doc);
 				}
+				logString('getLocation success');
 				return callback(null, doc);
 			}
 		});
@@ -238,12 +265,14 @@ function GetInfo(){
 		}
 		request({"url" :locationURL, "qs" : propertiesObject}, function(err, response, doc){
 			if(err){
+				logString('getLocationFromAddress fail');
 				return callback(null,{'err' : 'Location from address unavailable'});
 			}
 			else {
 				if (typeof doc === 'string' || doc instanceof String){
 					doc = JSON.parse(doc);
 				}
+				logString('getLocationFromAddress success');
 				return callback(null, doc);
 			}
 		});
@@ -272,6 +301,7 @@ function GetInfo(){
 				propertiesObject["tara"] = country;
 				request({'url' : healthURL, 'qs' : propertiesObject}, function(err2, response2, hintsArray2){
 					if(err1 || err2){
+						logString('getInfoAboutHealth fail');
 						return callback(null,{'err' : 'Health info unavailable'});
 					} else{
 						if (typeof hintsArray1 === 'string' || hintsArray1 instanceof String){
@@ -281,6 +311,7 @@ function GetInfo(){
 							hintsArray2 = JSON.parse(hintsArray2);
 						}
 						var hintsArray = hintsArray1.concat(hintsArray2);
+						logString('getInfoAboutHealth success');
 						return callback(null, hintsArray);
 					}
 				})
@@ -296,12 +327,14 @@ function GetInfo(){
 			}
 			request({"url" : healthURL, "qs" : propertiesObject}, function(err, response, hintsArray){
 				if(err){
+					logString('getInfoAboutHealth fail');
 					return callback(null,{'err' : 'Health info unavailable'});
 				}
 				else {
 					if (typeof hintsArray === 'string' || hintsArray instanceof String){
 						hintsArray = JSON.parse(hintsArray);
 					}
+					logString('getInfoAboutHealth success');
 					return callback(null, hintsArray);
 				}
 			});
