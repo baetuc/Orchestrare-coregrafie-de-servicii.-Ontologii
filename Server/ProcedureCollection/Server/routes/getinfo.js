@@ -83,11 +83,12 @@ function GetInfo(){
 				return callback(null,{'err' : 'News unavailable'});
 			} else {
 				if (typeof newsArray === 'string' || newsArray instanceof String){
-					while(newsArray[0] != '['){
-						newsArray = newsArray.slice(1);
-					}
-					newsArray = newsArray.replace("'","");
-					newsArray = eval( '(' + newsArray + ')' );
+					newsArray = JSON.parse(newsArray)
+					// while(newsArray[0] != '['){
+					// 	newsArray = newsArray.slice(1);
+					// }
+					// newsArray = newsArray.replace("'","");
+					// newsArray = eval( '(' + newsArray + ')' );
 				}
 				logString('getNews fail');
 				return callback(null, newsArray);
@@ -104,11 +105,12 @@ function GetInfo(){
 			}
 			else {
 				if (typeof newsArray === 'string' || newsArray instanceof String){
-					while(newsArray[0] != '['){
-						newsArray = newsArray.slice(1);
-					}
-					newsArray = newsArray.replace("'","");
-					newsArray = eval( '(' + newsArray + ')' );
+					newsArray = JSON.parse(newsArray)
+					// while(newsArray[0] != '['){
+					// 	newsArray = newsArray.slice(1);
+					// }
+					// newsArray = newsArray.replace("'","");
+					// newsArray = eval( '(' + newsArray + ')' );
 				}
 				logString('getGlobalNews success');
 				return callback(null, newsArray);
@@ -129,11 +131,12 @@ function GetInfo(){
 			}
 			else {
 				if (typeof eventsArray === 'string' || eventsArray instanceof String){
-					while(newsArray[0] != '['){
-						newsArray = newsArray.slice(1);
-					}
-					newsArray = newsArray.replace("'","");
-					newsArray = eval( '(' + newsArray + ')' );
+					eventsArray = JSON.parse(eventsArray)
+					// while(newsArray[0] != '['){
+					// 	newsArray = newsArray.slice(1);
+					// }
+					// newsArray = newsArray.replace("'","");
+					// newsArray = eval( '(' + newsArray + ')' );
 				}
 				logString('getEventsFromTwon success');
 				return callback(null, eventsArray);
@@ -305,20 +308,20 @@ function GetInfo(){
 						return callback(null,{'err' : 'Health info unavailable'});
 					} else{
 						if (typeof hintsArray1 === 'string' || hintsArray1 instanceof String){
-							//hintsArray1 = JSON.parse(hintsArray1);
-							while(hintsArray1[0] != '['){
-								hintsArray1 = hintsArray1.slice(1);
-							}
-							hintsArray1 = hintsArray1.replace("'","");
-							hintsArray1 = eval( '(' + hintsArray1 + ')' );
+							hintsArray1 = JSON.parse(hintsArray1);
+							// while(hintsArray1[0] != '['){
+							// 	hintsArray1 = hintsArray1.slice(1);
+							// }
+							// hintsArray1 = hintsArray1.replace("'","");
+							// hintsArray1 = eval( '(' + hintsArray1 + ')' );
 						}
 						if (typeof hintsArray2 === 'string' || hintsArray2 instanceof String){
-							//hintsArray2 = JSON.parse(hintsArray2);
-							while(hintsArray2[0] != '['){
-								hintsArray2 = hintsArray2.slice(1);
-							}
-							hintsArray2 = hintsArray2.replace("'","");
-							hintsArray2 = eval( '(' + hintsArray2 + ')' );
+							hintsArray2 = JSON.parse(hintsArray2);
+							// while(hintsArray2[0] != '['){
+							// 	hintsArray2 = hintsArray2.slice(1);
+							// }
+							// hintsArray2 = hintsArray2.replace("'","");
+							// hintsArray2 = eval( '(' + hintsArray2 + ')' );
 						}
 						var hintsArray = hintsArray1.concat(hintsArray2);
 						logString('getInfoAboutHealth success');
@@ -342,11 +345,12 @@ function GetInfo(){
 				}
 				else {
 					if (typeof hintsArray === 'string' || hintsArray instanceof String){
-						while(hintsArray[0] != '['){
-							hintsArray = hintsArray.slice(1);
-						}
-						hintsArray = hintsArray.replace("'","");
-						hintsArray = eval( '(' + hintsArray + ')' );
+						hintsArray = JSON.parse(hintsArray);
+						// while(hintsArray[0] != '['){
+						// 	hintsArray = hintsArray.slice(1);
+						// }
+						// hintsArray = hintsArray.replace("'","");
+						// hintsArray = eval( '(' + hintsArray + ')' );
 					}
 					logString('getInfoAboutHealth success');
 					return callback(null, hintsArray);
