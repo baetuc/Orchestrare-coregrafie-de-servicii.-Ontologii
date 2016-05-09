@@ -1,6 +1,6 @@
 function GetInfo(){
 	var request = require('request');
-
+	var fs = require('fs')
 	var config = require('./config.js')
 	var weatherURL = (config['weatherURL'] || 'http://127.0.0.1') + '/ip/';
 	var newsURL = (config['newsURL'] || 'http://127.0.0.1') + ':5555';
@@ -11,7 +11,7 @@ function GetInfo(){
 	
 	var logString = function(data){
 		var now = new Date();
-		fs.appendFile('log.txt', now + ' ' + data);
+		fs.appendFile('log.txt', now + ' ' + data + '\n');
 	}
 	this.getWeather = function(lat,long,date,callback){
 		if(!date){
@@ -305,10 +305,20 @@ function GetInfo(){
 						return callback(null,{'err' : 'Health info unavailable'});
 					} else{
 						if (typeof hintsArray1 === 'string' || hintsArray1 instanceof String){
-							hintsArray1 = JSON.parse(hintsArray1);
+							//hintsArray1 = JSON.parse(hintsArray1);
+							while(hintsArray1[0] != '['){
+								hintsArray1 = hintsArray1.slice(1);
+							}
+							hintsArray1 = hintsArray1.replace("'","");
+							hintsArray1 = eval( '(' + hintsArray1 + ')' );
 						}
 						if (typeof hintsArray2 === 'string' || hintsArray2 instanceof String){
-							hintsArray2 = JSON.parse(hintsArray2);
+							//hintsArray2 = JSON.parse(hintsArray2);
+							while(hintsArray2[0] != '['){
+								hintsArray2 = hintsArray2.slice(1);
+							}
+							hintsArray2 = hintsArray2.replace("'","");
+							hintsArray2 = eval( '(' + hintsArray2 + ')' );
 						}
 						var hintsArray = hintsArray1.concat(hintsArray2);
 						logString('getInfoAboutHealth success');
@@ -332,7 +342,11 @@ function GetInfo(){
 				}
 				else {
 					if (typeof hintsArray === 'string' || hintsArray instanceof String){
-						hintsArray = JSON.parse(hintsArray);
+						while(hintsArray[0] != '['){
+							hintsArray = hintsArray.slice(1);
+						}
+						hintsArray = hintsArray.replace("'","");
+						hintsArray = eval( '(' + hintsArray + ')' );
 					}
 					logString('getInfoAboutHealth success');
 					return callback(null, hintsArray);
