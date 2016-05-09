@@ -1,7 +1,7 @@
 var myLong = 27.59832;
 var myLat = 47.15958;
 
-var globalIP="172.17.50.37:8888";
+var globalIP="http://172.17.254.226:8888";
 var calendarMonthOffset = 0;
 
 var doThisNow=0;
@@ -9,13 +9,13 @@ var swipeRightBool=0;
 var globalEventDate=new Date(Date.now());
 
 function newsClicked(){
-	$.ajax({url:"simulare/news.json", success:function(result){
+	/*$.ajax({url:"simulare/news.json", success:function(result){
 		var data=JSON.parse(result);
 				
 		fillNews(data);
 
 		$('#newsButton').trigger();
-	}});
+	}});*/
 }
 
 function showCalendarDays(data){
@@ -48,13 +48,29 @@ function fillWeatherElement(data){
 }
 function showHealth(infos){
 	var healthTip = "";
-	$(infos.health).each(function(index,element){ 
-		healthTip=healthTip+element+'\n\n';});
-	alert(healthTip);
+	if(infos.health.err)
+		alert(infos.health.err);
+	else{
+		$(infos.health).each(function(index,element){ 
+			healthTip=healthTip+element+'\n\n';});
+		alert(healthTip);
+	}
 }
 
 function setCurrentLocation(){
-	$.ajax({url: globalIP+"/?action=getCurrentLocation", success:function(result){
+	//alert(globalIP+"/?action=getCurrentLocation");
+	/*$.ajax({
+    type: "GET",
+    url: globalIP+"?action=getCurrentLocation",
+    dataType: "jsonp",
+    success: function(){alert("DA");},
+    error: function (xhr, ajaxOptions, thrownError) {
+      alert(xhr.status);
+      alert(thrownError);
+    }
+});*/
+		
+	$.ajax({url:globalIP+"?action=getCurrentLocation", success:function(result){
 			var data=result;
 			$(data.location).each(function(index,element){
 				myLat=element.latitude;
@@ -65,37 +81,43 @@ function setCurrentLocation(){
 
 function fillNews(data){
 	$('#myPanel').empty();
-	$(data.news).each(function(index,element){
-		var normalTime = new Date(0); 
-		normalTime.setUTCSeconds(element.date);
-		
-		$('#myPanel').append('<div id="newsContent">'+
-		'<h2>'+element.title+'</h2>'+
-		'<p style="fontSize:10px">'+element.intro+'</p>'+
-		'<a href="'+element.url+'">'+element.url+'</a>'+
-		'<p>'+normalTime+'</p>'+
-		'</div>');
-	});
+	if(data.news.err)
+		alert(data.news.err);
+	else{
+		$(data.news).each(function(index,element){
+			var normalTime = new Date(0); 
+			normalTime.setUTCSeconds(element.date);
+			
+			$('#myPanel').append('<div id="newsContent">'+
+			'<h2>'+element.title+'</h2>'+
+			'<p style="fontSize:10px">'+element.intro+'</p>'+
+			'<a href="'+element.url+'" target="_blank">'+element.url+'</a>'+
+			'<p>'+normalTime+'</p>'+
+			'</div>');
+		});
+	}
 }
 function fillPins(data){
-	  var myLatLng = {lat: myLat, lng: myLong};
-	  //var myLatLng = {lat: data.poi[0].lat, lng: data.poi[0].long};
+	if(data.poi.length==0)
+		return;
+	  //var myLatLng = {lat: myLat, lng: myLong};
+	  var myLatLng = {lat: data.poi[0].lat, lng: data.poi[0].long};
 		  
 	  var map = new google.maps.Map(document.getElementById('map'), {
-		zoom: 8,
+		zoom: 9,
 		center: myLatLng
 	  });
 
 	$(data.poi).each(function(index,element){
-	  var latAsNumber=parseFloat(element.latitude);
-	  var longAsNumber=parseFloat(element.longitude);
+	  var latAsNumber=parseFloat(element.lat);
+	  var longAsNumber=parseFloat(element.long);
 
 	  var myLatLng = {lat: latAsNumber, lng: longAsNumber};
 
 	  var marker = new google.maps.Marker({
 		position: myLatLng,
 		map: map,
-		title: ''
+		title: element.name
 	  });
 	});
 }
@@ -238,7 +260,7 @@ $(document).ready(function(){
 	$('#PnAll').click(function(){
 		setCurrentLocation();
 		$('#swipeme-left').find(".centerAndColor").empty();
-		$.ajax({url:globalIP+"?action=getHealthWeatherNewsBasedOnCurrentLocation", success:function(result){
+		$.ajax({url:globalIP+"?action=getAllFromLocation", success:function(result){
 			var data=result;
 			
 			showHealth(data);
@@ -286,7 +308,7 @@ $(document).ready(function(){
 		}});		
 	});	
 	//everything from location
-	$('#EfCL').click(function(){
+	/*$('#EfCL').click(function(){
 		setCurrentLocation();
 		$('#swipeme-left').find(".centerAndColor").empty();
 		$.ajax({url:globalIP+"/?action=getAllFromLocation", success:function(result){
@@ -302,9 +324,10 @@ $(document).ready(function(){
 				document.getElementById("newsButton").click();
 			}
 		}});		
-	});	
+	});	*/
 	
 	$('#swipeRight').click(function(){
+		swipeRightBool=0; // 2 luni in urma aicisa. TODO
 		$(".responsive-calendar").responsiveCalendar();
 		
 		var checkClass = $('#swipeme').attr("class");
@@ -340,12 +363,12 @@ function colorCalendarDays(){
 				var d = new Date(Date.now());
 				d.setMonth(d.getMonth() + calendarMonthOffset);
 					//globalIP+"/?action=getMonthEvents&date="+d.getTime().toString() | "simulare/generalEvents.json"
-					$.ajax({url: "simulare/eventsForMonth.json", success:function(result){
-					var data=JSON.parse(result);					
+					$.ajax({url: globalIP+"/?action=getMonthEvents&date="+d.getTime().toString(), success:function(result){
+					var data=result;					
 					
 					$(data.events).each(function(index,element){
 						var normalTime = new Date(0); 
-						normalTime.setUTCSeconds(element.date);
+						normalTime.setUTCMilliseconds(element.date);
 					
 						var auxDay=normalTime.getDate();						
 						var matchingElement = $("a:contains('"+auxDay+"')").filter(function() {return $(this).text() === String(auxDay)}).parent().filter(function(){return $(this).attr("class").indexOf("not-current")==-1})[0];
@@ -364,7 +387,9 @@ function colorCalendarDays(){
 																		myLong = element.gpsLocation.longitude;
 																	}													
 																																		
-																	auxDate.setUTCSeconds(element.start);
+																	auxDate.setUTCMilliseconds(element.start);
+																	globalEventDate=auxDate;
+																	
 																	$('#calendarText').append('<div>'+'<h3>Locatie: '+element.gpsLocation.city+'</h3>'+
 																	'<div>'+'Descriere: ' +element.description+'</div>'+
 																	'<div>'+'Start la data: ' +auxDate+'</div>'+
