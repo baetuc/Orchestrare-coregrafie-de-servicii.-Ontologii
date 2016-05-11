@@ -1,7 +1,7 @@
 var myLong = 27.59832;
 var myLat = 47.15958;
 
-var globalIP="http://172.17.254.226:8888";
+var globalIP="http://digix.me:8888";
 var calendarMonthOffset = 0;
 
 var doThisNow=0;
