@@ -126,6 +126,16 @@ public class CalendarProvider {
 	
 	
 	/**
+	 * 
+	 * For testing purposes
+	 * @return all events stored
+	 *  
+	 * 
+	 */
+	
+	
+	
+	/**
 	 * Adds the specified event to the calendar between the specified timestamps
 	 * 
 	 * @param  	event	The event to add
