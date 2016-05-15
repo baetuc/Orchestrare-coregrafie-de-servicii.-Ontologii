@@ -1,5 +1,9 @@
 package ro.calendar.provider;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
+
 import ro.calendar.json.JSONObject;
 
 public class Event {

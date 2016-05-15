@@ -56,7 +56,7 @@ public class CalendarHttpHandler implements HttpHandler {
 			JSONObject requestObject= new JSONObject(str);
 			String action = null;
 			String data = null;
-
+			
 			//Validating arguments
 			try{
 				action = requestObject.getString("action");
@@ -71,7 +71,9 @@ public class CalendarHttpHandler implements HttpHandler {
 					os.write(response.getBytes());
 					os.close();	
 			}
-
+			
+			
+			System.out.println("Am primit Get "+action+" "+data);
 
 			//Convert the timestamp received from long to java.timestamp
 			Timestamp timp=new Timestamp(0);
@@ -83,44 +85,52 @@ public class CalendarHttpHandler implements HttpHandler {
 				CalendarProvider c=CalendarProvider.getInstance();
 				long time = timp.getTime();
 				ArrayList<Event> returnData = c.getEvents(time);
-				
+				System.out.println(returnData);
 				if(returnData==null){
-					responseJSON.put("0");
+					responseJSON.put("[]");
 				}else{
 					for(Event e :returnData){
 						JSONObject obj = new JSONObject(e.getJson());
 						responseJSON.put(obj);
 					}
+					response = responseJSON.toString();
 				}
 			//getEventDays received
 			}else if("getEventDays".equalsIgnoreCase(action)){
 				CalendarProvider c=CalendarProvider.getInstance();
 				long time = timp.getTime();
 				ArrayList<Timestamp> returnData = c.getEventDays(time);
-				
+					System.out.println(returnData);
 				if(returnData==null){
-					responseJSON.put("0");
+					responseJSON.put("[]");
 				}else{
 					for(Timestamp e :returnData){
 						//responseJSON.put(URLDecoder.decode(e.toString(),"Utf-8"));
-						responseJSON.put(e.getTime());
+						JSONObject myString = new JSONObject().put("date",e.getTime());
+						
+						responseJSON.put(myString);
 					}
 				}
+				response = responseJSON.toString();
 			}
 			//getSpecificEvent received
 			else if("getSpecificEvent".equalsIgnoreCase(action)){
 				CalendarProvider c=CalendarProvider.getInstance();
 				long time = timp.getTime();
-				Event e = c.getSpecificEvent(time);
-				responseJSON.put(e.getJson());
+				String eventJson = c.getSpecificEvent(time);
+				if(eventJson == null)
+					eventJson = "[]";
+				//responseJSON.put(eventJson);
+				System.out.println(eventJson);
+				response = eventJson;
 				
 			}
 			//Error parsing arguments
 			else{
-				responseJSON.put("0");
+				responseJSON.put("[]");
 			}
 			
-			response = responseJSON.toString();
+			
 			h.sendResponseHeaders(200, response.length());
 			OutputStream os = h.getResponseBody();
 			os.write(response.getBytes());
