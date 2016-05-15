@@ -87,7 +87,8 @@ public class CalendarHttpHandler implements HttpHandler {
 				ArrayList<Event> returnData = c.getEvents(time);
 				System.out.println(returnData);
 				if(returnData==null){
-					responseJSON.put("[]");
+					//responseJSON.put("[]");
+					response = responseJSON.toString();
 				}else{
 					for(Event e :returnData){
 						JSONObject obj = new JSONObject(e.getJson());
@@ -102,7 +103,9 @@ public class CalendarHttpHandler implements HttpHandler {
 				ArrayList<Timestamp> returnData = c.getEventDays(time);
 					System.out.println(returnData);
 				if(returnData==null){
-					responseJSON.put("[]");
+					//responseJSON.put("[]");
+					response = responseJSON.toString();
+					responseJSON.put(response);
 				}else{
 					for(Timestamp e :returnData){
 						//responseJSON.put(URLDecoder.decode(e.toString(),"Utf-8"));
