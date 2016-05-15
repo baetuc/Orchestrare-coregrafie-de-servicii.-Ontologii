@@ -54,6 +54,8 @@ public class RssExtractor {
             if (line.contains("<title>") && inItem) {
                 int firstPos = line.indexOf("<title>");
                 int lastPos = line.indexOf("</title>");
+                if (lastPos == -1)
+                    lastPos = line.indexOf("</title>");
                 String temp = line.substring(firstPos, lastPos);
                 temp = temp.replace("<title>", "");
                 news.setTitle(temp);
@@ -63,31 +65,37 @@ public class RssExtractor {
             if (line.contains("<description>") && inItem) {
                 int firstPos = line.indexOf("<description>");
                 int lastPos = line.indexOf("&lt;br");
+                if (lastPos == -1)
+                    lastPos = line.indexOf("</description>");
                 String temp = line.substring(firstPos, lastPos);
                 temp = temp.replace("<description>", "");
-                news.setDescription(temp);
+                news.setIntro(temp);
                 continue;
             }
 
             if (line.contains("<link>") && inItem) {
                 int firstPos = line.indexOf("<link>");
                 int lastPos = line.indexOf("</link>");
+                if (lastPos == -1)
+                    lastPos = line.indexOf("</link>");
                 String temp = line.substring(firstPos, lastPos);
                 temp = temp.replace("<link>", "");
-                news.setLink(temp);
+                news.setUrl(temp);
                 continue;
             }
 
             if (line.contains("<pubDate>") && inItem) {
                 int firstPos = line.indexOf("<pubDate>");
                 int lastPos = line.indexOf("</pubDate>");
+                if (lastPos == -1)
+                    lastPos = line.indexOf("</pubDate>");
                 String temp = line.substring(firstPos, lastPos);
                 temp = temp.replace("<pubDate>", "");
 
                 DateFormat format = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
                 Date date = format.parse(temp);
 
-                news.setPubDate(date.getTime());
+                news.setDate(date.getTime());
             }
         }
 
