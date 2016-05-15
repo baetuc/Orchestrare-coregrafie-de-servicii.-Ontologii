@@ -1,27 +1,36 @@
 <?php
-	$input_url='action=vreme?lat=23.323?long=45.232?data=127377232';
+	//$input_url='action=vreme?lat=23.323?long=45.232?data=127377232';
 
-	$search_lat=$_GET['lat'];
+  $search_lat=$_GET['lat'];
 	$search_long=$_GET['long'];
 	$search_date=$_GET['data'];
+  //$search_lat=45.471929;
+  //$search_long=27.187633;
+ //$search_date=1461654407;
 	//echo $search_lat.$search_long.$search_date;
-    $request = 'http://api.openweathermap.org/data/2.5/forecast?lat='.$search_lat.'&lon='.$search_long.'appid=05ec9d3fe88782ad7b55b4d3cf393a2b';
-    //$search_date=1461226130;
+  $request = 'http://api.openweathermap.org/data/2.5/forecast?lat='.$search_lat.'&lon='.$search_long.'&appid=05ec9d3fe88782ad7b55b4d3cf393a2b';
+   
 
     $response  = file_get_contents($request);
     $jsonobj  = json_decode($response,TRUE);
     $timestamp=$jsonobj['list'][4]['dt'];
     $now = new DateTime();
-    echo $now->getTimestamp(); 
-    //if (strcspn($_REQUEST['$search_date'], '0123456789') != strlen($_REQUEST['$search_date']))
-      //echo "data primita este invalida";
-     
+
+   
     if(($search_date-$now->getTimestamp())/(60*60*24) >5)
-    	echo "Data dorita este mult prea departe".($search_date-$now->getTimestamp())/(60*60*24)."<br/>";
+    {
+    	$error_msg="Data dorita este mult prea departe".($search_date-$now->getTimestamp())/(60*60*24)."<br/>";//error
+      $jsnresponse=json_encode($error_msg);
+      echo $jsnresponse;
+    }
     else if(($search_date-$now->getTimestamp())/(60*60*24) <0)
-    	echo "Data evenimentului a trecut deja".($search_date-$now->getTimestamp())/(60*60*24)."<br/>";
+    {
+    	$error_msg2="Data evenimentului a trecut deja".($search_date-$now->getTimestamp())/(60*60*24)."<br/>";//error
+      $jsnresponse=json_encode($error_msg2);
+      echo $jsnresponse;
+    }
     else{
-	echo gmdate("Y-m-d\	T H:i:s\ ", $timestamp)."diferenta ".($search_date-$now->getTimestamp())/(60*60*24)."<br/>";
+	//echo gmdate("Y-m-d\	T H:i:s\ ", $timestamp)."diferenta ".($search_date-$now->getTimestamp())/(60*60*24)."<br/>";
 
     $tosend_temp = $jsonobj['list'][4]['main']['temp'];
     $cityname=$jsonobj['city']['name'];
@@ -29,8 +38,7 @@
     $tosend_conditions = $jsonobj['list'][3]['weather'][0]['description'];
     $tosend_wind = $jsonobj['list'][3]['wind']['speed'];
     $tosend_temp=$tosend_temp-273;
-//    if($tosend_conditions=="clear sky")
-   //   echo "test gud";
+
     switch($tosend_conditions){
     case "clear sky": $img_url="http://openweathermap.org/img/w/01d.png";break;
      case "few clouds": $img_url="http://openweathermap.org/img/w/02d.png";break;
@@ -45,14 +53,6 @@
        $responseobj=array('Temperature:'=>$tosend_temp,'humidity'=>$tosend_humidity,'wind'=>$tosend_wind,'img'=>$img_url);
        $jsnresponse=json_encode($responseobj);
        echo $jsnresponse;
-   echo "<img src=".$img_url.">"."<br/>";
-    echo "<strong>Temperature :</strong>".$tosend_temp."<br/>";
-     echo "<strong>city :</strong>".$cityname."<br/>";
-    echo "<strong>Humidity: :</strong>".$tosend_humidity."% "."<br/>";
-    echo "<strong>Wind :</strong>".$tosend_wind."<br/>";
-    
-    echo "<strong>Weather be like :</strong>".$tosend_conditions."<br/>";
+  
 		}
-    
-    //print_r($jsonobj);
 ?>

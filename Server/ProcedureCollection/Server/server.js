@@ -16,7 +16,7 @@ var app=express();
 app.engine('html',cons.swig); //N-o sa folosim probabil
 app.set('view engine','html'); //La fel.
 app.set('views',__dirname + '/views'); //La fel, asta e pentru fisiere HTML, dar lasam aici poate o sa trb candva
-app.use(timeout('1200s')); //marim timeout
+app.use(timeout('5s')); //marim timeout
 app.use(cookieParser()); 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
