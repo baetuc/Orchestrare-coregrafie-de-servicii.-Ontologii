@@ -1,16 +1,20 @@
 package networking;
 
 import com.sun.net.httpserver.HttpExchange;
-import org.json.simple.JSONObject;
 import utilities.JSONBuilder;
 import utilities.News;
 import utilities.NewsParser;
 import utilities.RssExtractor;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.ParseException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
 public class WorkerRunnable implements Runnable {
     private HttpExchange httpExchange;
@@ -22,59 +26,64 @@ public class WorkerRunnable implements Runnable {
     @Override
     public void run() {
         String location = null;
+        StringBuilder logBuilder = new StringBuilder();
         String query = httpExchange.getRequestURI().getQuery();
         Map<String, String> parameters = queryToMap(query);
 
-        if (parameters != null && parameters.containsKey("city") && !parameters.get("city").equals(""))
+        if (parameters != null && parameters.containsKey("city") && !parameters.get("city").equals("")) {
             location = parameters.get("city");
+            logBuilder.append("Received request with location " + location + "\n");
+        } else {
+            logBuilder.append("Received request for general news\n");
+        }
 
         RssExtractor extractor = new RssExtractor();
         List<News> news = null;
 
         try {
             news = extractor.getNewsFromRss();
+            logBuilder.append("   Extracted RSS feed\n");
         } catch (ParseException e) {
             e.printStackTrace();
             System.out.println("Error accessing RSS feed!");
+            logBuilder.append("   Failed to extract RSS feed (ParseException)\n");
             System.exit(1);
         } catch (IOException e) {
             e.printStackTrace();
+            logBuilder.append("  Failed to extract RSS (IOException)\n");
             System.out.println("IO error!");
         }
 
         NewsParser newsParser = new NewsParser(news, location);
+
         Stack<News> newsStack = newsParser.generateNewsStack();
+        logBuilder.append("   Generated news stack\n");
 
         JSONBuilder jsonBuilder = new JSONBuilder(newsStack);
-        List<JSONObject> jsonArray = jsonBuilder.generateJSONArray();
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("[");
-        Iterator<JSONObject> jsonObjectIterator = jsonArray.iterator();
-        while (jsonObjectIterator.hasNext()) {
-            JSONObject obj = jsonObjectIterator.next();
-            sb.append(obj);
-            if (jsonObjectIterator.hasNext())
-                sb.append(",");
-        }
-        sb.append("]");
+        String jsonArray = jsonBuilder.generateJSONArray();
+        logBuilder.append("   Generated JSON response\n");
+        //System.out.println(jsonArray);
 
         try {
-            writeResponse(httpExchange, sb.toString());
+            writeResponse(httpExchange, jsonArray);
+            logBuilder.append("   Wrote response to client\n\n");
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("IO error!");
+            logEvent("   Failed to write response to client (IOException)\n");
         }
+
+        logEvent(logBuilder.toString());
     }
 
-    protected void writeResponse(HttpExchange httpExchange, String response) throws IOException {
-        httpExchange.sendResponseHeaders(200, response.getBytes("UTF-16").length);
+    private void writeResponse(HttpExchange httpExchange, String response) throws IOException {
+        httpExchange.sendResponseHeaders(200, response.getBytes().length);
         OutputStream os = httpExchange.getResponseBody();
-        os.write(response.getBytes("UTF-16"));
+        os.write(response.getBytes());
         os.close();
     }
 
-    protected Map<String, String> queryToMap(String query) {
+    private Map<String, String> queryToMap(String query) {
         if (query == null || query.equals(""))
             return null;
 
@@ -87,5 +96,18 @@ public class WorkerRunnable implements Runnable {
                 result.put(pair[0], "");
         }
         return result;
+    }
+
+    private boolean logEvent(String message) {
+        File logFile = new File("log.txt");
+        try {
+            FileWriter logWriter = new FileWriter(logFile, true);
+            logWriter.write(message);
+            logWriter.close();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

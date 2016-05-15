@@ -3,22 +3,22 @@ package utilities;
 public class News {
 
     private String title;
-    private String description;
-    private String link;
-    private long pubDate;
+    private String intro;
+    private String url;
+    private long date;
 
     public News() {
         this.title = null;
-        this.description = null;
-        this.link = null;
-        this.pubDate = 0;
+        this.intro = null;
+        this.url = null;
+        this.date = 0;
     }
 
-    public News(String title, String description, String link, long pubDate) {
+    public News(String title, String description, String url, long date) {
         this.title = title;
-        this.description = description;
-        this.link = link;
-        this.pubDate = pubDate;
+        this.intro = description;
+        this.url = url;
+        this.date = date;
     }
 
     public String getTitle() {
@@ -29,36 +29,36 @@ public class News {
         this.title = titlu;
     }
 
-    public String getDescription() {
-        return description;
+    public String getIntro() {
+        return intro;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setIntro(String intro) {
+        this.intro = intro;
     }
 
-    public String getLink() {
-        return link;
+    public String getUrl() {
+        return url;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
-    public long getPubDate() {
-        return pubDate;
+    public long getDate() {
+        return date;
     }
 
-    public void setPubDate(long pubDate) {
-        this.pubDate = pubDate;
+    public void setDate(long date) {
+        this.date = date;
     }
 
     @Override
     public String toString() {
         return this.getTitle() + "\n\t" +
-                this.getDescription() + "\n\t" +
-                this.getLink() + "\n\t" +
-                this.getPubDate() + "\n";
+                this.getIntro() + "\n\t" +
+                this.getUrl() + "\n\t" +
+                this.getDate() + "\n";
     }
 }
 

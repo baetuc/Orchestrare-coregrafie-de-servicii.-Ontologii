@@ -98,9 +98,9 @@ public class NewsParser {
 
         for (News temp : newsList) {
             if (temp.getTitle().contains(location)
-                    || temp.getDescription().contains(descriptionSearchTerm)
+                    || temp.getIntro().contains(descriptionSearchTerm)
                     || temp.getTitle().contains(noDiacriticalLocation)
-                    || temp.getDescription().contains(noDiacriticalLocation))
+                    || temp.getIntro().contains(noDiacriticalLocation))
                 localNews.push(temp);
             else
                 newsStack.push(temp);
