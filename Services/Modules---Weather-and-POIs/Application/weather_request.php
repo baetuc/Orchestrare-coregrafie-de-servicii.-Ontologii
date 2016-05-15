@@ -4,7 +4,7 @@
   $search_lat=$_GET['lat'];
 	$search_long=$_GET['long'];
 	$search_date=$_GET['data'];
-  //$search_lat=45.471929;
+  //$search_lat=47.17;
   //$search_long=27.187633;
  //$search_date=1461654407;
 	//echo $search_lat.$search_long.$search_date;
@@ -19,13 +19,13 @@
    
     if(($search_date-$now->getTimestamp())/(60*60*24) >5)
     {
-    	$error_msg="Data dorita este mult prea departe".($search_date-$now->getTimestamp())/(60*60*24)."<br/>";//error
+    	$error_msg="err: Date too far away";//error
       $jsnresponse=json_encode($error_msg);
       echo $jsnresponse;
     }
-    else if(($search_date-$now->getTimestamp())/(60*60*24) <0)
+    else if(($search_date-$now->getTimestamp())/(60*60*24) <-1)
     {
-    	$error_msg2="Data evenimentului a trecut deja".($search_date-$now->getTimestamp())/(60*60*24)."<br/>";//error
+    	$error_msg2="err: Date already passed";//error
       $jsnresponse=json_encode($error_msg2);
       echo $jsnresponse;
     }
@@ -50,9 +50,13 @@
            case "snow": $img_url="http://openweathermap.org/img/w/13d.png";break;
            default: $img_url="http://openweathermap.org/img/w/50d.png";break; //mist
                              }
-       $responseobj=array('Temperature:'=>$tosend_temp,'humidity'=>$tosend_humidity,'wind'=>$tosend_wind,'img'=>$img_url);
+                             $tosend_temp=floor($tosend_temp);
+       $responseobj=array('temperature'=>$tosend_temp,'humidity'=>$tosend_humidity,'wind'=>$tosend_wind,'url'=>$img_url);
        $jsnresponse=json_encode($responseobj);
+
        echo $jsnresponse;
   
 		}
+    $data = "[WEATHER] ".date('d/m/Y H:i:s')." Request: ".$search_lat." ".$search_long." ".$search_date." Response: ".$jsnresponse." \n";
+    $ret = file_put_contents('log.txt', $data, FILE_APPEND | LOCK_EX);
 ?>

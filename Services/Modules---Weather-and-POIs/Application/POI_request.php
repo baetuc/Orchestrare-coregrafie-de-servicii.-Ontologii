@@ -2,8 +2,8 @@
 
 	//$lat=45.471929;
 	//$long=9.187633;
-	$lat=$_get['lat'];
-	$long=$_get['long'];
+	$lat=$_GET['lat'];
+	$long=$_GET['long'];
 	$key=	'AIzaSyD3aiPkRdbRFb13gjD4C3rmWCNPRZ3eEbg';
 	$request = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' .$lat.','.$long.'&keyword=museum|restaurant|amusement_park|night_club|bar|cafe|church&radius=10000&sensor=false&key=' .$key;
 	
@@ -40,6 +40,9 @@
     $jsonresponse=json_encode($fullarray);
 	echo $jsonresponse;
    
+
+   $data = "[POI] ".date('d/m/Y H:i:s')." Request: ".$lat." ".$long." "." Response: ".$jsnresponse." \n";
+   $ret = file_put_contents('log.txt', $data, FILE_APPEND | LOCK_EX);
 
     
 ?>

@@ -1,7 +1,6 @@
 package networking;
 
 import com.sun.net.httpserver.HttpServer;
-import networking.handlers.DefaultHandler;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

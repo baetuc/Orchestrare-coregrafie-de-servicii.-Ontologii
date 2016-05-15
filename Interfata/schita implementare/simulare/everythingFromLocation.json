@@ -1,0 +1,24 @@
+{
+  "weather":
+  {
+    "temperature": "32",
+    "urlImage": "random.org",
+    "humidity": "100",
+    "wind": "1302"
+  },
+ "news":[
+{
+	 "title": "This is working",
+	 "intro":"we discovered that everything is working",
+	 "url":"url",
+	 "date":1461423000
+  },
+{
+	 "title": "This is working too",
+	 "intro":"we discovered that everything is working",
+	 "url":"url",
+	 "date":1461423000
+  }
+],
+  "health": ["sfat1","sfat2","sfat3"]
+}

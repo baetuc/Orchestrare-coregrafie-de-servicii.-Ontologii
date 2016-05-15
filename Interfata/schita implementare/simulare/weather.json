@@ -1,0 +1,9 @@
+{
+  "weather":
+  {
+    "temperature": "21",
+    "urlImage": "random.org",
+    "humidity": "100",
+    "wind": "1302"
+  }
+}

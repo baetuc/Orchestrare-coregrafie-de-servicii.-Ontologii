@@ -1,0 +1,17 @@
+{
+  "weather":[
+  {
+    "temperature": "21",
+    "urlImage": "random.org",
+    "humidity": "100",
+    "wind": "1302"
+  },
+  {
+    "temperature": "29",
+    "urlImage": "random.org",
+    "humidity": "97",
+    "wind": "1302"
+  }
+ ],
+"health": ["sfat1","sfat2"]
+}

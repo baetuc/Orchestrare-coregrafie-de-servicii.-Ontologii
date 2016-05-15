@@ -1,4 +1,4 @@
-package networking.handlers;
+package networking;
 
 import com.sun.net.httpserver.HttpExchange;
 import org.json.simple.JSONObject;
@@ -8,16 +8,19 @@ import utilities.NewsParser;
 import utilities.RssExtractor;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.ParseException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
-public class DefaultHandler extends AbstractHandler {
+public class WorkerRunnable implements Runnable {
+    private HttpExchange httpExchange;
+
+    public WorkerRunnable(HttpExchange httpExchange) {
+        this.httpExchange = httpExchange;
+    }
 
     @Override
-    public void handle(HttpExchange httpExchange) throws IOException {
+    public void run() {
         String location = null;
         String query = httpExchange.getRequestURI().getQuery();
         Map<String, String> parameters = queryToMap(query);
@@ -32,8 +35,11 @@ public class DefaultHandler extends AbstractHandler {
             news = extractor.getNewsFromRss();
         } catch (ParseException e) {
             e.printStackTrace();
-            writeResponse(httpExchange, "Error accessing RSS feed!");
+            System.out.println("Error accessing RSS feed!");
             System.exit(1);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("IO error!");
         }
 
         NewsParser newsParser = new NewsParser(news, location);
@@ -53,7 +59,33 @@ public class DefaultHandler extends AbstractHandler {
         }
         sb.append("]");
 
-        writeResponse(httpExchange, sb.toString());
+        try {
+            writeResponse(httpExchange, sb.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("IO error!");
+        }
+    }
+
+    protected void writeResponse(HttpExchange httpExchange, String response) throws IOException {
+        httpExchange.sendResponseHeaders(200, response.getBytes("UTF-16").length);
+        OutputStream os = httpExchange.getResponseBody();
+        os.write(response.getBytes("UTF-16"));
+        os.close();
+    }
+
+    protected Map<String, String> queryToMap(String query) {
+        if (query == null || query.equals(""))
+            return null;
+
+        Map<String, String> result = new HashMap<>();
+        for (String param : query.split("&")) {
+            String[] pair = param.split("=");
+            if (pair.length > 1)
+                result.put(pair[0], pair[1]);
+            else
+                result.put(pair[0], "");
+        }
+        return result;
     }
 }
-

@@ -1,0 +1,15 @@
+{
+  "weather":
+  {
+    "temperature": "32",
+    "urlImage": "random.org",
+    "humidity": "100",
+    "wind": "1302"
+  },
+ "news":{
+	 "title": "simple news",
+	 "intro":"intro",
+	 "url":"url",
+	 "date":1461423000
+  }
+}
